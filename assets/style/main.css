@@ -1,0 +1,27 @@
+
+@import "reset.css";
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+}
+
+html {
+    background-color: #000;
+    font-family: sans-serif;
+}
+
+body {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -320px;
+    margin-top: -240px;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}

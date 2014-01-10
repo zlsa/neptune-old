@@ -24,7 +24,7 @@
         };
 }());
 
-function f(n) {
+function fl(n) {
     return Math.floor(n);
 }
 

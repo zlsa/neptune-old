@@ -10,11 +10,14 @@ function canvas_init() {
     canvas_add("blocks");
     canvas_add("menu");
 
+    prop.canvas.scale=2.0;
+
     prop.canvas.size={ // all canvases are the same size
 	height:0,
 	width:0
     };
 
+    canvas_text_init();
     loaded("canvas");
 }
 
@@ -103,6 +106,32 @@ function canvas_draw_players(cc) {
     canvas_draw_player(cc,prop.player.human);
 }
 
+// MENU
+
+function canvas_draw_item(cc,i,t,font) {
+    var f=fonts[font];
+    canvas_text_print(cc,
+                      (prop.canvas.size.width/prop.canvas.scale-
+                       (f.metrics.width+1)*(t.length))/2,
+                      10+(i*(f.metrics.height*prop.canvas.scale)),
+                      t,font);
+}
+
+function canvas_draw_menu(cc) {
+    cc.fillStyle="rgba(0,0,0,0.9)";
+    cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
+    canvas_draw_item(cc,0,"NEPTUNE","large");
+    canvas_draw_item(cc,2,"START GAME","large");
+    canvas_draw_item(cc,3,"OPTIONS","large");
+    canvas_draw_item(cc,4,"HELP","large");
+    canvas_text_print(cc,10,225,"IT'S A PLEASURE TO KILL YOU.","small");
+    cc.translate(fl(prop.canvas.size.width/2),0);
+    // cc.fillStyle="#fff";
+    // var f=fonts.large;
+    // cc.fillRect(-prop.canvas.size.width/3,10+2.2*(f.metrics.height*prop.canvas.scale),
+    //             prop.canvas.size.width/1.5,3);
+}
+
 function canvas_update() {
     if(prop.canvas.dirty.atmosphere) {
         prop.canvas.dirty.atmosphere=false;
@@ -116,8 +145,7 @@ function canvas_update() {
         var cc=canvas_get("blocks");
         cc.save();
         canvas_clear(cc);
-        cc.translate(f(prop.canvas.size.width/2),f(prop.canvas.size.height/2));
-        cc.translate(f(prop.ui.pan[0]),f(prop.ui.pan[1]));
+        cc.translate(fl(prop.canvas.size.width/2),fl(prop.canvas.size.height/2));
         canvas_draw_blocks(cc);
         cc.restore();
     }
@@ -126,9 +154,17 @@ function canvas_update() {
         var cc=canvas_get("players");
         cc.save();
         canvas_clear(cc);
-        cc.translate(f(prop.canvas.size.width/2),f(prop.canvas.size.height/2));
-//        cc.translate(f(prop.ui.pan[0]),f(prop.ui.pan[1]));
+        cc.translate(fl(prop.canvas.size.width/2),fl(prop.canvas.size.height/2));
+//        cc.translate(fl(prop.ui.pan[0]),fl(prop.ui.pan[1]));
         canvas_draw_players(cc);
+        cc.restore();
+    }
+    if(prop.canvas.dirty.menu || true) {
+        prop.canvas.dirty.menu=false;
+        var cc=canvas_get("menu");
+        cc.save();
+        canvas_clear(cc);
+        canvas_draw_menu(cc);
         cc.restore();
     }
     canvas_dirty();

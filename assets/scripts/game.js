@@ -1,6 +1,7 @@
 
-var GAME_MODE_SANDBOX=0;
-var GAME_MODE_CHALLENGE=1;
+var GAME_STATE_MENU=0; // welcome
+var GAME_STATE_PAUSED=1;
+var GAME_STATE_PLAY=2;
 
 function game_init() {
     prop.game={};
@@ -10,8 +11,10 @@ function game_init() {
     prop.game.gravity=[0,0]; // 1+ unit per second
     prop.game.speedup=1; // good for debugging
 
-    state_add([
+    prop.game.state=GAME_STATE_MENU;
 
+    state_add([
+        "prop.game.state"
     ]);
     state_restore("game");
 

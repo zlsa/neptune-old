@@ -58,7 +58,7 @@ function done() {
     resize();
     $(window).resize(resize);
     call_all("done");
-//    update();
+    update();
 }
 
 function resize() {

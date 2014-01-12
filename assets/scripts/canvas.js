@@ -124,7 +124,7 @@ function canvas_draw_menu(cc) {
     canvas_draw_item(cc,2,"START GAME","large");
     canvas_draw_item(cc,3,"OPTIONS","large");
     canvas_draw_item(cc,4,"HELP","large");
-    canvas_text_print(cc,10,225,"IT'S A PLEASURE TO KILL YOU.","small");
+    canvas_text_print(cc,10,225,"COPYRIGHT EVAN PATTISON","small");
     cc.translate(fl(prop.canvas.size.width/2),0);
     // cc.fillStyle="#fff";
     // var f=fonts.large;

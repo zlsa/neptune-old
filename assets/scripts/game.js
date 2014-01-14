@@ -33,10 +33,14 @@ function game_restart() {
 
 }
 
-function game_new(mode,craft,planet,craft_state) {
-    prop.game.mode=mode;
-    prop.game.craft=craft;
-    prop.game.planet=planet;
-    planet_set(planet);
-    craft_set(craft);
+function game_start() {
+    console.log("Started game!");
+    menu_clear();
+}
+
+function game_resume_menu() {
+    prop.menu.menus["resume"]=new Menu("Resume saved game",[
+	["No saved games"]
+    ]);
+    prop.menu.stack.push("resume");
 }

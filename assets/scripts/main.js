@@ -5,6 +5,8 @@ var modules=[
     "prop",
     "state",
     "game",
+    "assets",
+    "menu",
     "ui",
     "canvas",
 ];

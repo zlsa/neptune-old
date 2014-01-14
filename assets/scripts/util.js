@@ -1,4 +1,6 @@
 
+window.AudioContext = window.AudioContext||window.webkitAudioContext;
+
 (function() {
     var lastTime = 0;
     var vendors = ['webkit', 'moz'];
@@ -24,8 +26,37 @@
         };
 }());
 
+var sin_cache={};
+
+function sin(v) {
+    return(Math.sin(v));
+    if(!v in sin_cache)
+        sin_cache[v]=Math.sin(v);
+    return(sin_cache[v]);
+}
+
+function cos(v) {
+    return(sin(v+Math.PI/2));
+}
+
+function normalize(v,length) {
+    var x=v[0];
+    var y=v[1];
+    var angle=Math.atan2(x,y);
+    if(!length)
+        length=1;
+    return([
+            sin(angle)*length,
+            cos(angle)*length
+    ]);
+}
+
 function fl(n) {
     return Math.floor(n);
+}
+
+function randint(l,h) {
+    return(Math.floor(Math.random()*(h-l+1))+l);
 }
 
 function s(i) {
@@ -35,14 +66,48 @@ function s(i) {
 	return "s";
 }
 
+function within(n,c,r) {
+    if((n > c+r) || (n < c-r))
+        return false;
+    return true;
+}
+
 function trange(il,i,ih,ol,oh) {
+    return(ol+(oh-ol)*(i-il)/(ih-il));
     i=(i/(ih-il))-il;
     return (i*(oh-ol))+ol;
 }
 
+function clamp(l,i,h) {
+    if(h == null) {
+        if(l > i)
+            return l;
+        return i;
+    }
+    var temp;
+    if(l > h) {
+        temp=h;
+        h=l;
+        l=temp;
+    }
+    if(l > i)
+        return l;
+    if(h < i)
+        return h;
+    return i;
+}
+
+function crange(il,i,ih,ol,oh) {
+    return clamp(ol,trange(il,i,ih,ol,oh),oh);
+}
+
+function srange(il,i,ih) {
+//    return Math.cos();
+}
+
 function distance(a,b) {
-    var x=Math.abs(a[0]-b[0]);
-    var y=Math.abs(a[1]-b[1]);
+    var x=a[0]-b[0];
+    var y=a[1]-b[1];
     return Math.sqrt((x*x)+(y*y));
 }
 

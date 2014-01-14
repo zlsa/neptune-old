@@ -10,7 +10,7 @@ function canvas_init() {
     canvas_add("blocks");
     canvas_add("menu");
 
-    prop.canvas.scale=2.0;
+    prop.canvas.scale=1.0;
 
     prop.canvas.size={ // all canvases are the same size
 	height:0,
@@ -108,24 +108,59 @@ function canvas_draw_players(cc) {
 
 // MENU
 
-function canvas_draw_item(cc,i,t,font) {
-    var f=fonts[font];
+function canvas_draw_item(cc,i,t,font,mw) {
+    var m=canvas_text_metrics(t,font);
     canvas_text_print(cc,
-                      (prop.canvas.size.width/prop.canvas.scale-
-                       (f.metrics.width+1)*(t.length))/2,
-                      10+(i*(f.metrics.height*prop.canvas.scale)),
-                      t,font);
+		      prop.canvas.size.width/2,(i*(m[1]+20))+15,
+                      t,font,"cb");
 }
 
-function canvas_draw_menu(cc) {
-    cc.fillStyle="rgba(0,0,0,0.9)";
+function canvas_draw_menu(cc,menu) {
+    var m=canvas_text_metrics("f","large");
+    var mw=0;
+    for(var i=0;i<menu.items.length;i++) {
+	mw=Math.max(canvas_text_metrics(menu.items[i][0],"large")[0],mw);
+    }
+    for(var i=0;i<menu.items.length;i++) {
+	var item=menu.items[i];
+	var o=i+2.5;
+	m=canvas_text_metrics(item[0],"large");
+//	m[0]=mw;
+	if(menu.selected == i) {
+	    canvas_text_print(cc,(prop.canvas.size.width-m[0]-60)/2,(o*(m[1]+20))+15,
+			      ">","large","cb");
+	    canvas_text_print(cc,(prop.canvas.size.width+m[0]+60)/2,(o*(m[1]+20))+15,
+			      "<","large","cb");
+	}
+	canvas_draw_item(cc,o,item[0],"large",mw);
+    }
+    canvas_draw_item(cc,1,menu.title,"large");
+}
+
+function canvas_draw_menus(cc) {
+    if(prop.menu.stack.length < 1)
+	return;
+    cc.imageSmoothingEnabled=false;
+    cc.fillStyle="rgba(0,0,0,0.8)";
     cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
-    canvas_draw_item(cc,0,"NEPTUNE","large");
-    canvas_draw_item(cc,2,"START GAME","large");
-    canvas_draw_item(cc,3,"OPTIONS","large");
-    canvas_draw_item(cc,4,"HELP","large");
-    canvas_text_print(cc,10,225,"COPYRIGHT EVAN PATTISON","small");
-    cc.translate(fl(prop.canvas.size.width/2),0);
+    canvas_draw_menu(cc,menu_get(0));
+    canvas_text_print(cc,10,prop.canvas.size.height-30,
+		      "Game copyright Forest Ka","small","lb");
+    canvas_text_print(cc,10,prop.canvas.size.height-10,
+		      "Music copyright Evan Pattison","small","lb");
+    return;
+    cc.beginPath();
+    cc.moveTo(prop.canvas.size.width/2,0);
+    cc.lineTo(prop.canvas.size.width/2,prop.canvas.size.height);
+    cc.moveTo(0,prop.canvas.size.height/2);
+    cc.lineTo(prop.canvas.size.width,prop.canvas.size.height/2);
+    cc.lineWidth=2;
+    cc.strokeStyle="#38f";
+    cc.stroke();
+    cc.beginPath();
+    cc.arc(prop.canvas.size.width/2,prop.canvas.size.height/2,prop.canvas.size.height/2.5,0,Math.PI*2);
+    cc.stroke();
+//    cc.translate(fl(prop.canvas.size.width/2),0);
     // cc.fillStyle="#fff";
     // var f=fonts.large;
     // cc.fillRect(-prop.canvas.size.width/3,10+2.2*(f.metrics.height*prop.canvas.scale),
@@ -159,13 +194,13 @@ function canvas_update() {
         canvas_draw_players(cc);
         cc.restore();
     }
-    if(prop.canvas.dirty.menu || true) {
+    if(prop.canvas.dirty.menu) {
         prop.canvas.dirty.menu=false;
         var cc=canvas_get("menu");
         cc.save();
         canvas_clear(cc);
-        canvas_draw_menu(cc);
+        canvas_draw_menus(cc);
         cc.restore();
     }
-    canvas_dirty();
+//    canvas_dirty();
 }

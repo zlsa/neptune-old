@@ -37,12 +37,12 @@ var Player=function(loc,type) {
 	    this.dir="left";
 	else if(this.motion > tiny)
 	    this.dir="right";
-        this.speed[0]=this.motion*4;
+        this.speed[0]=this.motion*6;
         this.speed[0]+=prop.game.gravity[0]*ts;
         this.speed[1]+=prop.game.gravity[1]*ts;
         if(this.jump) {
 	    if(this.on_ground && !this.hit[TOP]) {
-		this.speed[1]+=4.2;
+		this.speed[1]+=6;
 	    }
         }
 	if(this.hit[LEFT]) {

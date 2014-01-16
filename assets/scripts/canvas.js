@@ -193,10 +193,10 @@ function canvas_draw_water(cc) {
     var temp=prop.ui.pan[1]*prop.canvas.scale;
     var start=((d*(-blocks_get("water_level")))+prop.canvas.size.height/2)+temp;
     cc.fillStyle="rgba(64,191,255,0.2)";
-    // cc.fillStyle=cc.createLinearGradient(0,start,0,start+prop.canvas.size.height*2);
-    // cc.fillStyle.addColorStop(0.0,"rgba(64,191,255,0.2)");
-    // cc.fillStyle.addColorStop(0.1,"rgba(32,128,200,0.5)");
-    // cc.fillStyle.addColorStop(1.0,"rgba(0,20,50,0.9)");
+    cc.fillStyle=cc.createLinearGradient(0,start,0,start+prop.canvas.size.height*2);
+    cc.fillStyle.addColorStop(0.0,"rgba(64,191,255,0.2)");
+    cc.fillStyle.addColorStop(0.1,"rgba(32,128,200,0.5)");
+    cc.fillStyle.addColorStop(1.0,"rgba(0,20,50,0.9)");
     start=Math.max(0,start);
     cc.fillRect(0,start,
 		prop.canvas.size.width,prop.canvas.size.height);

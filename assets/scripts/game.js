@@ -8,7 +8,7 @@ function game_init() {
     
     prop.game.paused=false;
     prop.game.in_window=true;
-    prop.game.gravity=[0,-8];
+    prop.game.gravity=[0,-14];
     prop.game.speedup=1; // good for debugging
 
     prop.game.state=GAME_STATE_MENU;

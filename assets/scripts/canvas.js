@@ -253,7 +253,7 @@ function canvas_draw_menus(cc) {
     cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
     canvas_draw_menu(cc,menu_get(0));
     canvas_text_print(cc,10,prop.canvas.size.height-30,
-		      "Game copyright Forest Ka","small","lb");
+		      "Game copyright ZLSA","small","lb");
     canvas_text_print(cc,10,prop.canvas.size.height-10,
 		      "Music copyright Evan Pattison","small","lb");
     var m=canvas_text_metrics(menu_get(0).title,"large");

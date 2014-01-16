@@ -8,11 +8,18 @@ function prop_init() {
     prop.time.before=0;
     prop.time.after=0;
     prop.time.frame_time;
+    prop.time.frame_samples=3;
+    prop.time.frame_time_avg=0;
     prop.time.fps=0;
+    prop.frames=0;
 
     prop.debug=true;
 
     loaded("prop");
+}
+
+function prop_update() {
+    prop.frames+=1;
 }
 
 function prop_get_value(p) {

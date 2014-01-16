@@ -28,6 +28,14 @@ window.AudioContext = window.AudioContext||window.webkitAudioContext;
 
 var sin_cache={};
 
+var tiny=0.000001;
+
+function equals(a,b) {
+    if(a+tiny > b && a-tiny < b)
+	return true;
+    return false;
+}
+
 function sin(v) {
     return(Math.sin(v));
     if(!v in sin_cache)

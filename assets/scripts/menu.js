@@ -34,7 +34,7 @@ function menu_init() {
 	["No help"]
     ]);
 
-    prop.menu.stack=["main"];
+    prop.menu.stack=[];
     
     loaded("menu");
 }
@@ -61,7 +61,6 @@ function menu_toggle() {
 }
 
 function menu_open() {
-    console.log("Opening menu!");
     prop.menu.stack=["main"];
     prop.canvas.dirty.menu=true;
 }

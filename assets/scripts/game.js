@@ -8,7 +8,7 @@ function game_init() {
     
     prop.game.paused=false;
     prop.game.in_window=true;
-    prop.game.gravity=[0,0]; // 1+ unit per second
+    prop.game.gravity=[0,-8];
     prop.game.speedup=1; // good for debugging
 
     prop.game.state=GAME_STATE_MENU;
@@ -24,7 +24,7 @@ function game_init() {
 }
 
 function game_is_paused() {
-    if(prop.game.paused || prop.ui.menu.open || !prop.game.in_window)
+    if(prop.game.paused || menu_is_open() || !prop.game.in_window)
         return(true);
     return(false);
 }
@@ -36,6 +36,7 @@ function game_restart() {
 function game_start() {
     console.log("Started game!");
     menu_clear();
+    prop.player.human.restart();
 }
 
 function game_resume_menu() {

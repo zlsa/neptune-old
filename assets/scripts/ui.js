@@ -20,14 +20,17 @@ function ui_init() {
     
     $(window).keydown(function(e) {
 	prop.ui.keys[e.which]=true;
-	if(e.which == keysym.esc)
+	if(e.which == keysym.esc) {
 	    menu_toggle();
-	else if(e.which == keysym.enter)
+	} else if(e.which == keysym.enter) {
 	    menu_enter();
-	else if(e.which == keysym.up)
-	    menu_move(-1);
-	else if(e.which == keysym.down)
-	    menu_move(1);
+	} else if(e.which == keysym.up) {
+	    if(menu_is_open())
+		menu_move(-1);
+	} else if(e.which == keysym.down) {
+	    if(menu_is_open())
+		menu_move(1);
+	}
     });
     
     $(window).keyup(function(e) {
@@ -37,3 +40,23 @@ function ui_init() {
     loaded("ui");
 }
 
+function ui_update() {
+    if(menu_is_open())
+	return;
+    if(prop.ui.keys[keysym.left]) {
+        prop.player.human.motion=-1;
+    } else if(prop.ui.keys[keysym.right]) {
+        prop.player.human.motion=1;
+    } else {
+        prop.player.human.motion=0;
+    }
+    if(prop.ui.keys[keysym.up]) {
+        prop.player.human.jump=true;
+    } else {
+        prop.player.human.jump=false;
+    }
+    prop.ui.pan=[
+        prop.player.human.loc[0]*prop.blocks.size,
+        prop.player.human.loc[1]*prop.blocks.size
+    ];
+}

@@ -18,6 +18,7 @@ var Player=function(loc,type) {
     this.type=type; // "human" or "ai"
     this.on_ground=false;
     this.swimming=false;
+    this.dir="left";
 
     this.update_ai=function() {
 	return;
@@ -32,6 +33,10 @@ var Player=function(loc,type) {
     };
     this.update_physics=function() {
         var ts=1/prop.time.frame_time_avg;
+	if(this.motion < -tiny)
+	    this.dir="left";
+	else if(this.motion > tiny)
+	    this.dir="right";
         this.speed[0]=this.motion*4;
         this.speed[0]+=prop.game.gravity[0]*ts;
         this.speed[1]+=prop.game.gravity[1]*ts;

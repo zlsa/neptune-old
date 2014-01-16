@@ -19,9 +19,19 @@ function canvas_init() {
 	width:0
     };
 
+    var directions=["left","right"];
+    for(var i=0;i<directions.length;i++) {
+	var d=directions[i];
+	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-stand-"+d,
+			     "assets/images/neptune/character/"+d+"/stand.png"));
+	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-air-"+d,
+			     "assets/images/neptune/character/"+d+"/stand.png"));
+    }
     for(var i=0;i<4;i++) {
-	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-walk"+i,
-			     "assets/images/neptune/character/walk"+i+".png"));
+	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-left"+i,
+			     "assets/images/neptune/character/left/walk"+i+".png"));
+	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-right"+i,
+			     "assets/images/neptune/character/right/walk"+i+".png"));
     }
     var block_types=["sand"]
     var block_variants=["left","top","right"]
@@ -157,9 +167,14 @@ function canvas_draw_player(cc,p) {
     var a=null;
     var t=7;
     var f=Math.floor(prop.frames%(t*4)/t);
-    if(!p.on_ground || p.motion == 0)
-	f=0;
-    a=asset_get("neptune-walk"+f,ASSET_TYPE_IMAGE);
+    if(!p.on_ground)
+	a=asset_get("neptune-air-"+p.dir,ASSET_TYPE_IMAGE);
+    else if(p.motion < -tiny)
+	a=asset_get("neptune-left"+f,ASSET_TYPE_IMAGE);
+    else if(p.motion > tiny)
+	a=asset_get("neptune-right"+f,ASSET_TYPE_IMAGE);
+    else
+	a=asset_get("neptune-stand-"+p.dir,ASSET_TYPE_IMAGE);
     if(a == null || a.status != ASSET_STATUS_READY)
 	return;
     cc.translate(fl((p.loc[0]-0.5)*d),fl(-(p.loc[1]+1)*d));

@@ -1,6 +1,7 @@
 # Overview
 
-A 2D 8-bit HTML5 watery platformer game.
+A 2D 8-bit HTML5 watery platformer game. Play the latest version
+[here](http://zlsa.github.io/neptune/);
 
 # Concept
 

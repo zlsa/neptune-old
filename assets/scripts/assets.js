@@ -57,6 +57,10 @@ function asset_download(asset) {
         assets_next();
         return;
     }
+    if(asset_get(asset.name,asset.type).status != ASSET_STATUS_WAITING) {
+        assets_next();
+        return;
+    }
     if(asset.type == ASSET_TYPE_IMAGE) {
 	asset.data=new Image();
 	asset.data.src=asset.url;

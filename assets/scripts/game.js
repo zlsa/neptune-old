@@ -70,6 +70,9 @@ function game_start() {
     prop.game.state=GAME_STATE_PLAY;
     menu_clear();
     prop.player.human.restart();
+    var name=levels[prop.game.level][1];
+    if(!audio_is_playing(name))
+        audio_start(name);
 }
 
 function game_resume_menu() {

@@ -53,6 +53,10 @@ function assets_add(a) {
 }
 
 function asset_download(asset) {
+    if(asset.status != ASSET_STATUS_WAITING) {
+        assets_next();
+        return;
+    }
     if(asset.type == ASSET_TYPE_IMAGE) {
 	asset.data=new Image();
 	asset.data.src=asset.url;
@@ -119,7 +123,14 @@ function assets_start_queue() {
 	return;
     }
     var next=prop.assets.queue[0];
-    if(next.status == ASSET_STATUS_INPROGRESS)
+    if(next.status == ASSET_STATUS_READY) {
         return;
+    }
+    if(next.status == ASSET_STATUS_READY ||
+       next.status == ASSET_STATUS_ERROR) {
+        prop.assets.queue.splice(0,1);
+        assets_start_queue();
+        return;
+    }
     asset_download(next);
 }

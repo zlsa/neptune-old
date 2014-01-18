@@ -148,26 +148,30 @@ function canvas_draw_block(cc,b) {
     if(b.type == "sand") {
 	cc.drawImage(asset_get("block-sand",ASSET_TYPE_IMAGE).data,
 		     0,0,prop.blocks.size,prop.blocks.size,
-		     0,0,s*prop.blocks.size,s*prop.blocks.size);
+		     0,0,d,d);
 	if(!top || !top.solid()) {
 	    cc.drawImage(asset_get("block-sand-top",ASSET_TYPE_IMAGE).data,
 			 0,0,prop.blocks.size,prop.blocks.size,
-			 0,-4,s*prop.blocks.size,s*prop.blocks.size);
+			 0,-4,d,d);
 	}
 	if(!left || !left.solid()) {
 	    cc.drawImage(asset_get("block-sand-left",ASSET_TYPE_IMAGE).data,
 			 0,0,prop.blocks.size,prop.blocks.size,
-			 -4,0,s*prop.blocks.size,s*prop.blocks.size);
+			 -4,0,d,d);
 	}
 	if(!right || !right.solid()) {
 	    cc.drawImage(asset_get("block-sand-right",ASSET_TYPE_IMAGE).data,
 			 0,0,prop.blocks.size,prop.blocks.size,
-			 d-4,0,s*prop.blocks.size,s*prop.blocks.size);
+			 d-4,0,d,d);
 	}
     } else if(b.type == "grass") {
+	if(b.loc[1]%2 == 0) {
+	    cc.translate(d,0);
+	    cc.scale(-1,1);
+	}
 	cc.drawImage(asset_get("block-grass0",ASSET_TYPE_IMAGE).data,
 		     0,0,prop.blocks.size,prop.blocks.size,
-		     0,0,s*prop.blocks.size,s*prop.blocks.size);
+		     0,0,d,d);
     } else if(b.type == "end") {
 	cc.fillStyle="#000";
 	cc.fillRect(0,0,d,d);

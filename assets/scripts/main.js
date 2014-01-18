@@ -4,11 +4,12 @@ var VERSION=[0,0,1];
 var modules=[
     "prop",
     "state",
-    "game",
     "assets",
+    "game",
     "blocks",
     "menu",
     "player",
+    "audio",
     "ui",
     "canvas",
 ];
@@ -75,7 +76,7 @@ function update() {
     prop.time.after=new Date().getTime();
     call_all("update");
     prop.time.frame_time=(prop.time.after-prop.time.before);
-//    prop.time.frame_time=20;
+    prop.time.frame_time=Math.min(prop.time.frame_time,300);
     var s=prop.time.frame_samples;
     prop.time.frame_time_avg=prop.time.frame_time/prop.game.speedup;//(prop.time.frame_time*6/s)+((prop.time.frame_time_avg/s)*(s-1));
     if(prop.frames%20==0)

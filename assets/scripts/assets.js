@@ -1,17 +1,20 @@
 
 var ASSET_TYPE_IMAGE=0;
-var ASSET_TYPE_MAP=1;
+var ASSET_TYPE_AUDIO=1;
+var ASSET_TYPE_MAP=2;
 
 var ASSET_STATUS_WAITING=0;
 var ASSET_STATUS_INPROGRESS=1;
 var ASSET_STATUS_READY=2;
 var ASSET_STATUS_ERROR=3;
 
-var Asset=function(type,name,url) {
+var Asset=function(type,name,url,onload) {
     this.type=type;
     this.name=name;
     this.url=url;
     this.status=ASSET_STATUS_WAITING;
+    if(onload)
+        this.onload=onload;
     this.data=null;
 };
 
@@ -59,7 +62,7 @@ function asset_download(asset) {
 	    asset.status=ASSET_STATUS_READY;
 	    assets_next();
 	    if(asset.onload)
-		asset.onload(asset.data);
+		asset.onload(asset);
 	};
 	asset.data.onerror=function() {
 	    asset.status=ASSET_STATUS_ERROR;
@@ -75,7 +78,7 @@ function asset_download(asset) {
     		asset.data=d;
 		assets_next();
 		if(asset.onload)
-		    asset.onload(d);
+		    asset.onload(asset);
     	    })
     	    .error(function(e) {
 		asset.status=ASSET_STATUS_ERROR;
@@ -84,6 +87,23 @@ function asset_download(asset) {
 		if(asset.onerror)
 		    asset.onerror(e);
     	    });
+    } else if(asset.type == ASSET_TYPE_AUDIO) {
+        asset.data=new Audio();
+        asset.data.src=asset.url;
+        asset.status=ASSET_STATUS_INPROGRESS;
+	asset.data.onloadeddata=function() {
+	    prop.canvas.dirty.menu=true;
+	    asset.status=ASSET_STATUS_READY;
+	    assets_next();
+	    if(asset.onload)
+		asset.onload(asset);
+	};
+	asset.data.onerror=function() {
+	    asset.status=ASSET_STATUS_ERROR;
+	    assets_next();
+	    if(asset.onerror)
+		asset.onerror(e);
+	};
     }
 }
 
@@ -99,5 +119,7 @@ function assets_start_queue() {
 	return;
     }
     var next=prop.assets.queue[0];
+    if(next.status == ASSET_STATUS_INPROGRESS)
+        return;
     asset_download(next);
 }

@@ -34,6 +34,14 @@ function ui_init() {
 		menu_move(1);
 	}
     });
+
+    $(window).blur(function() {
+	prop.game.in_window=false;
+    });
+    
+    $(window).focus(function() {
+	prop.game.in_window=true;
+    });
     
     $(window).keyup(function(e) {
 	prop.ui.keys[e.which]=false;

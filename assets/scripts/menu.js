@@ -109,3 +109,13 @@ function menu_get(offset) {
     i=clamp(0,i,prop.menu.stack.length);
     return(prop.menu.menus[prop.menu.stack[i]]);
 }
+
+function menu_update() {
+    if(menu_is_open()) {
+        if(!audio_is_playing("title"))
+            audio_start("title");
+    } else {
+        if(audio_is_playing("title"))
+            audio_stop("title");
+    }
+}

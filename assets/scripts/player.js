@@ -44,10 +44,23 @@ var Player=function(loc,type) {
 	this.motion=this.ai.direction;
     };
     this.restart=function() {
-	this.on_ground=false;
-	this.motion=0;
-	this.speed=[0,0];
-	this.loc=[loc[0],loc[1]];
+        this.loc=[this.startpos[0],this.startpos[1]];
+        this.jump=false;
+        this.down=false;
+        this.climbing=false;
+        this.motion=0;
+        this.speed=[0,0];
+        this.hit=[false,false,false,false];
+        this.type=type;
+        this.on_ground=false;
+        this.swimming=false;
+        this.dir="right";
+        this.health=100;
+        this.ai={
+	    active:false,
+	    jumping:false,
+	    direction:1
+        };
     };
     this.update_physics=function() {
 	var ts=delta();

@@ -25,9 +25,6 @@ function blocks_init() {
 
     prop.blocks.bounds=[0,0,0,0];
 
-    var l=new Asset(ASSET_TYPE_MAP,"demo","assets/maps/demo.map");
-    l.onload=blocks_load_from_string;
-    assets_add(l);
     loaded("blocks");
 }
 

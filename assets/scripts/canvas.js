@@ -109,6 +109,15 @@ function canvas_draw_cloud(cc,i,f) {
 		 trange(0,Math.sin(fm/100),1,h-d,h+d));
 }
 
+function canvas_draw_horizon(cc) {
+    var d=prop.blocks.size*prop.canvas.scale;
+    var temp=prop.ui.pan[1]*prop.canvas.scale;
+    var start=((d*(-blocks_get("water_level")))+prop.canvas.size.height/2)+temp;
+    cc.fillStyle="rgba(128,255,255,0.2)";
+    start=Math.max(0,start);
+    cc.fillRect(0,start,prop.canvas.size.width,prop.canvas.size.height);
+}
+
 function canvas_draw_atmosphere(cc) {
     cc.fillStyle="#adf";
     cc.fillStyle=cc.createLinearGradient(0,0,0,prop.canvas.size.height);
@@ -121,6 +130,7 @@ function canvas_draw_atmosphere(cc) {
     for(var i=0;i<4;i++) {
 	canvas_draw_cloud(cc,i,prop.frames);
     }
+    canvas_draw_horizon(cc);
 }
 
 // BLOCKS
@@ -206,11 +216,13 @@ function canvas_draw_player(cc,p) {
     cc.translate(fl((p.loc[0]-0.5)*d),fl(-(p.loc[1]+1)*d));
     if(prop.game.end != 0) {
 	var time=new Date().getTime()-prop.game.end;
+	cc.translate(d/2,d);
 	if(time < 2000) {
-	    cc.translate(d/2,d);
 	    cc.scale(crange(0,time,2000,1,0),crange(0,time,2000,1,0));
-	    cc.translate(-d/2,-d);
+	} else {
+	    cc.scale(crange(2000,time,3000,0,1),crange(2000,time,3000,0,1));
 	}
+	cc.translate(-d/2,-d);
     }
     cc.drawImage(a.data,0,0,prop.blocks.size,prop.blocks.size,
 		 0,0,prop.blocks.size*s,prop.blocks.size*s);
@@ -278,6 +290,21 @@ function canvas_draw_menus(cc) {
 	cc.lineWidth=2;
 	cc.strokeStyle="#38f";
 	cc.stroke();
+    }
+    if(prop.game.state == GAME_STATE_LOADING || prop.game.loaded != 0) {
+	var time=new Date().getTime()-prop.game.loaded;
+	if(prop.game.loaded == 0)
+	    time=0;
+	var st=10;
+	var fade=Math.round(crange(0,time,1000,1,0)*st)/st;
+	cc.globalAlpha=fade;
+	cc.fillStyle="#000";
+	cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
+	canvas_text_print(cc,prop.canvas.size.width/2,prop.canvas.size.height/2,
+			  "LOADING...","large","cc");
+	if(time > 1000)
+	    prop.game.loaded=0;
+	cc.globalAlpha=1;
     }
     canvas_text_print(cc,10,10,
 		      "Health "+Math.round(prop.player.human.health),"small-inverse","lt");

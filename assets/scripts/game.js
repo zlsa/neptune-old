@@ -1,7 +1,8 @@
 
-var GAME_STATE_MENU=0; // welcome
-var GAME_STATE_PLAY=1;
-var GAME_STATE_END=2;
+var GAME_STATE_LOADING=0;
+var GAME_STATE_MENU=1;
+var GAME_STATE_PLAY=2;
+var GAME_STATE_END=3;
 
 function game_init() {
     prop.game={};
@@ -11,8 +12,9 @@ function game_init() {
     prop.game.gravity=[0,-2];
     prop.game.speedup=1; // good for debugging
     prop.game.end=0;
+    prop.game.loaded=0;
 
-    prop.game.state=GAME_STATE_PLAY;
+    prop.game.state=GAME_STATE_LOADING;
 
     game_restart();
 
@@ -40,6 +42,8 @@ function game_start() {
     setTimeout(function() {
 	prop.game.end=0;
     },1000);
+    if(prop.game.state == GAME_STATE_LOADING)
+	prop.game.loaded=new Date().getTime();
     prop.game.state=GAME_STATE_PLAY;
     menu_clear();
     prop.player.human.restart();

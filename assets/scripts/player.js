@@ -76,7 +76,7 @@ var Player=function(loc,type) {
 	    this.speed[1]=0;
         if(this.jump) {
 	    if(under && under.ladder) {
-		if(!above) {
+		if(!above || !above.solid()) {
 		    this.speed[1]+=2.2;
 		    this.climbing=false;
 		} else {
@@ -86,15 +86,15 @@ var Player=function(loc,type) {
 		this.speed[1]+=2.2;
 		this.climbing=false;
 	    }
-        } else if(this.down && under && under.ladder && !above) {
+        } else if(this.down && under && under.ladder && (!above || !above.solid())) {
 	    this.speed[1]=-1.5;
 	}
     }; 
     this.block_bottom=function() {
 	var bottom_left_loc=[fl(this.loc[0]-this.width/4),-fl(this.loc[1])];
 	var bottom_right_loc=[fl(this.loc[0]+this.width/4),-fl(this.loc[1])];
-	var bottom_left_height=block_below(bottom_left_loc,2,-1);
-	var bottom_right_height=block_below(bottom_right_loc,2,-1);
+	var bottom_left_height=block_below(bottom_left_loc,2,-1,true);
+	var bottom_right_height=block_below(bottom_right_loc,2,-1,true);
 	if(bottom_left_height && bottom_left_height.solid())
 	    bottom_left_height=-bottom_left_height.loc[1];
 	else
@@ -109,8 +109,8 @@ var Player=function(loc,type) {
     this.block_top=function() {
 	var top_left_loc=[fl(this.loc[0]-this.width/4),-fl(this.loc[1]+0.2)];
 	var top_right_loc=[fl(this.loc[0]+this.width/4),-fl(this.loc[1]+0.2)];
-	var top_left_height=block_above(top_left_loc,2,0);
-	var top_right_height=block_above(top_right_loc,2,0);
+	var top_left_height=block_above(top_left_loc,2,0,true);
+	var top_right_height=block_above(top_right_loc,2,0,true);
 	if(top_left_height && top_left_height.solid())
 	    top_left_height=-top_left_height.loc[1];
 	else
@@ -125,8 +125,8 @@ var Player=function(loc,type) {
     this.block_left=function() {
 	var left_top_loc=[fl(this.loc[0]+this.width),-fl(this.loc[1]+1.8)];
 	var left_bottom_loc=[fl(this.loc[0]+this.width),-fl(this.loc[1]+1.2)];
-	var left_top_distance=block_left(left_top_loc,2,0);
-	var left_bottom_distance=block_left(left_bottom_loc,2,0);
+	var left_top_distance=block_left(left_top_loc,2,0,true);
+	var left_bottom_distance=block_left(left_bottom_loc,2,0,true);
 	if(left_top_distance && left_top_distance.solid())
 	    left_top_distance=-left_top_distance.loc[0];
 	else
@@ -141,8 +141,8 @@ var Player=function(loc,type) {
     this.block_right=function() {
 	var right_top_loc=[fl(this.loc[0]-this.width),-fl(this.loc[1]+1.8)];
 	var right_bottom_loc=[fl(this.loc[0]-this.width),-fl(this.loc[1]+1.2)];
-	var right_top_distance=block_right(right_top_loc,2,0);
-	var right_bottom_distance=block_right(right_bottom_loc,2,0);
+	var right_top_distance=block_right(right_top_loc,2,0,true);
+	var right_bottom_distance=block_right(right_bottom_loc,2,0,true);
 	if(right_top_distance && right_top_distance.solid())
 	    right_top_distance=-right_top_distance.loc[0];
 	else

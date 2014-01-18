@@ -65,46 +65,55 @@ function block_get(x,y) {
     return null;
 }
 
-function block_above(loc,md,start) {
+function block_above(loc,md,start,solid) {
     if(!start) start=1;
     var x=loc[0];
     var y=loc[1]-start;
     if(!md) md=5;
     for(var i=0;i<md;i++) {
 	var bn=x+":"+(y-i);
-	if(bn in prop.blocks.blocks)
+	if(bn in prop.blocks.blocks) {
+	    if(solid && !prop.blocks.blocks[bn].solid())
+		continue;
 	    return prop.blocks.blocks[bn];
+	}
     }
     return null;
 }
 
-function block_below(loc,md,start) {
+function block_below(loc,md,start,solid) {
     if(!start) start=1;
     var x=loc[0];
     var y=loc[1]+start;
     if(!md) md=5;
     for(var i=0;i<md;i++) {
 	var bn=x+":"+(y+i);
-	if(bn in prop.blocks.blocks)
+	if(bn in prop.blocks.blocks) {
+	    if(solid && !prop.blocks.blocks[bn].solid())
+		continue;
 	    return prop.blocks.blocks[bn];
+	}
     }
     return null;
 }
 
-function block_left(loc,md,start) {
+function block_left(loc,md,start,solid) {
     if(!start) start=1;
     var x=loc[0]-start;
     var y=loc[1];
     if(!md) md=5;
     for(var i=0;i<md;i++) {
 	var bn=(x-i)+":"+y;
-	if(bn in prop.blocks.blocks)
+	if(bn in prop.blocks.blocks) {
+	    if(solid && !prop.blocks.blocks[bn].solid())
+		continue;
 	    return prop.blocks.blocks[bn];
+	}
     }
     return null;
 }
 
-function block_right(loc,md,start) {
+function block_right(loc,md,start,solid) {
     if(!start) start=1;
     var x=loc[0]+start;
     var y=loc[1];
@@ -112,8 +121,11 @@ function block_right(loc,md,start) {
 	md=5;
     for(var i=0;i<md;i++) {
 	var bn=(x+i)+":"+y;
-	if(bn in prop.blocks.blocks)
+	if(bn in prop.blocks.blocks) {
+	    if(solid && !prop.blocks.blocks[bn].solid())
+		continue;
 	    return prop.blocks.blocks[bn];
+	}
     }
     return null;
 }

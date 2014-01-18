@@ -23,7 +23,7 @@ function ui_init() {
 	if(e.which == keysym.esc) {
 	    menu_toggle();
 	} else if(e.which == keysym.space) {
-	    cheat();
+	    //cheat();
 	} else if(e.which == keysym.enter) {
 	    menu_enter();
 	} else if(e.which == keysym.up) {

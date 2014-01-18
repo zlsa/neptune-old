@@ -89,6 +89,8 @@ function asset_download(asset) {
 
 function assets_next() {
     prop.assets.queue.splice(0,1);
+    if(prop.assets.queue.length == 0 && prop.game.state == GAME_STATE_LOADING)
+	game_start();
     assets_start_queue();
 }
 

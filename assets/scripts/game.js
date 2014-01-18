@@ -6,7 +6,7 @@ var GAME_STATE_END=3;
 
 var levels=[
     ["demo","grassland"],
-    ["level1","grassland"]
+    ["level1","foo"]
 ];
 
 function game_init() {

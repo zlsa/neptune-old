@@ -30,7 +30,9 @@ function audio_start(name) {
         start.mode="start";
         loop.mode="start";
         start.data.currentTime=0;
+        loop.data.currentTime=0;
         start.data.play();
+        loop.data.pause();
         start.data.onended=function() {
             var start=asset_get(name.split("-")[0]+"-start",ASSET_TYPE_AUDIO);
             var loop=asset_get(name.split("-")[0]+"-loop",ASSET_TYPE_AUDIO);

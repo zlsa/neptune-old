@@ -169,6 +169,10 @@ function canvas_draw_block(cc,b) {
 	    cc.translate(d,0);
 	    cc.scale(-1,1);
 	}
+	if(b.loc[0]%2 == 0) {
+	    cc.translate(d,0);
+	    cc.scale(-1,1);
+	}
 	cc.drawImage(asset_get("block-grass0",ASSET_TYPE_IMAGE).data,
 		     0,0,prop.blocks.size,prop.blocks.size,
 		     0,0,d,d);

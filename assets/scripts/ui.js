@@ -22,6 +22,8 @@ function ui_init() {
 	prop.ui.keys[e.which]=true;
 	if(e.which == keysym.esc) {
 	    menu_toggle();
+	} else if(e.which == keysym.space) {
+	    cheat();
 	} else if(e.which == keysym.enter) {
 	    menu_enter();
 	} else if(e.which == keysym.up) {
@@ -40,20 +42,29 @@ function ui_init() {
     loaded("ui");
 }
 
+function cheat() {
+    player_warp(75,-7);
+}
+
 function ui_update() {
     if(menu_is_open())
 	return;
-    if(prop.ui.keys[keysym.left]) {
-        prop.player.human.motion=-1;
-    } else if(prop.ui.keys[keysym.right]) {
-        prop.player.human.motion=1;
-    } else {
-        prop.player.human.motion=0;
-    }
-    if(prop.ui.keys[keysym.up]) {
-        prop.player.human.jump=true;
-    } else {
-        prop.player.human.jump=false;
+    if(!prop.player.human.ai.active) {
+	if(prop.ui.keys[keysym.left]) {
+            prop.player.human.motion=-1;
+	} else if(prop.ui.keys[keysym.right]) {
+            prop.player.human.motion=1;
+	} else {
+            prop.player.human.motion=0;
+	}
+	if(prop.ui.keys[keysym.up]) {
+            prop.player.human.jump=true;
+	} else if(prop.ui.keys[keysym.down]) {
+            prop.player.human.down=true;
+	} else {
+            prop.player.human.jump=false;
+            prop.player.human.down=false;
+	}
     }
     prop.ui.pan=[
         prop.player.human.loc[0]*prop.blocks.size,

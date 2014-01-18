@@ -2,6 +2,13 @@
 var Block=function(loc,type) {
     this.loc=loc;
     this.type=type;
+    this.ladder=false;
+    this.solid=function() {
+	if(this.type == "sand" ||
+	   this.type == "dirt")
+	    return true;
+	return false;
+    };
 };
 
 function blocks_init() {
@@ -49,6 +56,13 @@ function block_can_clip(b) {
        (prop.blocks.bounds[RIGHT] > b.loc[0]))
 	return false;
     return true;
+}
+
+function block_get(x,y) {
+    var bn=x+":"+y;
+    if(bn in prop.blocks.blocks)
+	return prop.blocks.blocks[bn];
+    return null;
 }
 
 function block_above(loc,md,start) {
@@ -121,7 +135,7 @@ function blocks_load_from_string(string) {
 	    if(c == "\n") {
 		var header=headerline.split(":");
 		prop.blocks.data["name"]=header[0];
-		prop.blocks.data["water_level"]=parseInt(header[1]);
+		prop.blocks.data["water_level"]=parseFloat(header[1]);
 		mode="blocks";
 	    } else {
 		headerline+=c;
@@ -140,25 +154,36 @@ function blocks_load_from_string(string) {
         case "#":
             type="dirt";
             break;
+        case "H":
+            type="ladder";
+            break;
+        case "\"":
+            type="grass";
+            break;
         case ".":
             type="water";
             break;
         case "@":
             type="start";
             break;
+        case "E":
+            type="end";
+            break;
         }
         if(type == "start") {
             prop.blocks.start=[x+0.5,-y-1];
-            prop.player.human=new Player(prop.blocks.start);
             x+=1;
             continue;
         } else if(type == "none") {
             x+=1;
 	    continue;
 	}
-        prop.blocks.blocks[x+":"+y]=new Block([x,y],type);
-//	console.log("Added block!");
+	var b=new Block([x,y],type);
+	if(type == "ladder")
+	    b.ladder=true;
+        prop.blocks.blocks[x+":"+y]=b;
         x+=1;
     }
+    prop.player.human=new Player(prop.blocks.start);
     prop.canvas.dirty.blocks=true;
 }

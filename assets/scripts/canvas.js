@@ -33,14 +33,20 @@ function canvas_init() {
 	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-right"+i,
 			     "assets/images/neptune/character/right/walk"+i+".png"));
     }
+    for(var i=0;i<1;i++) {
+	assets_add(new Asset(ASSET_TYPE_IMAGE,
+			     "block-grass"+i,"assets/images/blocks/grass/grass"+i+".png"));
+    }
+    assets_add(new Asset(ASSET_TYPE_IMAGE,
+			 "block-ladder","assets/images/blocks/ladder/ladder.png"));
     var block_types=["sand"]
-    var block_variants=["left","top","right"]
+    var variants=["left","top","right"]
     for(var i=0;i<block_types.length;i++) {
 	var t=block_types[i];
-	for(var j=0;j<block_variants.length;j++) {
+	for(var j=0;j<variants.length;j++) {
 	    assets_add(new Asset(ASSET_TYPE_IMAGE,
-				 "block-"+t+"-"+block_variants[j],
-				 "assets/images/blocks/"+t+"/"+t+"-"+block_variants[j]+".png"));
+				 "block-"+t+"-"+variants[j],
+				 "assets/images/blocks/"+t+"/"+t+"-"+variants[j]+".png"));
 	}
 	assets_add(new Asset(ASSET_TYPE_IMAGE,"block-"+t,"assets/images/blocks/"+t+"/"+t+".png"));
     }
@@ -106,8 +112,11 @@ function canvas_draw_cloud(cc,i,f) {
 function canvas_draw_atmosphere(cc) {
     cc.fillStyle="#adf";
     cc.fillStyle=cc.createLinearGradient(0,0,0,prop.canvas.size.height);
-    cc.fillStyle.addColorStop(0.2,"#adf");
-    cc.fillStyle.addColorStop(0.7,"#fff");
+    // cc.fillStyle.addColorStop(0.2,"#adf");
+    // cc.fillStyle.addColorStop(0.7,"#fff");
+    cc.fillStyle.addColorStop(0.1,"#888");
+    cc.fillStyle.addColorStop(0.8,"#555");
+    cc.fillStyle="#adf";
     cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
     for(var i=0;i<4;i++) {
 	canvas_draw_cloud(cc,i,prop.frames);
@@ -123,32 +132,47 @@ function canvas_draw_block(cc,b) {
     var d=prop.blocks.size*prop.canvas.scale;
     var s=prop.canvas.scale;
     cc.translate(b.loc[0]*d,b.loc[1]*d);
-    var c="#f0f";
+    var top=block_above(b.loc,1);
+    var left=block_left(b.loc,1);
+    var right=block_right(b.loc,1);
     if(b.type == "sand") {
-	cc.drawImage(asset_get("block-sand",ASSET_TYPE_IMAGE).data,0,0,prop.blocks.size,prop.blocks.size,
+	cc.drawImage(asset_get("block-sand",ASSET_TYPE_IMAGE).data,
+		     0,0,prop.blocks.size,prop.blocks.size,
 		     0,0,s*prop.blocks.size,s*prop.blocks.size);
-	if(block_above(b.loc,1) == null) {
-	    cc.drawImage(asset_get("block-sand-top",ASSET_TYPE_IMAGE).data,0,0,prop.blocks.size,prop.blocks.size,
+	if(!top || !top.solid()) {
+	    cc.drawImage(asset_get("block-sand-top",ASSET_TYPE_IMAGE).data,
+			 0,0,prop.blocks.size,prop.blocks.size,
 			 0,-4,s*prop.blocks.size,s*prop.blocks.size);
 	}
-	if(block_left(b.loc,1) == null) {
-	    cc.drawImage(asset_get("block-sand-left",ASSET_TYPE_IMAGE).data,0,0,prop.blocks.size,prop.blocks.size,
+	if(!left || !left.solid()) {
+	    cc.drawImage(asset_get("block-sand-left",ASSET_TYPE_IMAGE).data,
+			 0,0,prop.blocks.size,prop.blocks.size,
 			 -4,0,s*prop.blocks.size,s*prop.blocks.size);
 	}
-	if(block_right(b.loc,1) == null) {
-	    cc.drawImage(asset_get("block-sand-right",ASSET_TYPE_IMAGE).data,0,0,prop.blocks.size,prop.blocks.size,
+	if(!right || !right.solid()) {
+	    cc.drawImage(asset_get("block-sand-right",ASSET_TYPE_IMAGE).data,
+			 0,0,prop.blocks.size,prop.blocks.size,
 			 d-4,0,s*prop.blocks.size,s*prop.blocks.size);
 	}
-    } else if(b.type == "water") {
-	if(block_above(b.loc,1) == null) {
-	    c=cc.createLinearGradient(0,0,0,d);
-	    c.addColorStop(0,"rgba(128,128,255,0.8)");
-	    c.addColorStop(1,"rgba(128,128,255,0.2)");
-	} else {
-            c="rgba(128,128,255,0.2)";
-	}
-	cc.fillStyle=c;
+    } else if(b.type == "grass") {
+	cc.drawImage(asset_get("block-grass0",ASSET_TYPE_IMAGE).data,
+		     0,0,prop.blocks.size,prop.blocks.size,
+		     0,0,s*prop.blocks.size,s*prop.blocks.size);
+    } else if(b.type == "end") {
+	cc.fillStyle="#000";
 	cc.fillRect(0,0,d,d);
+    } else if(b.type == "ladder") {
+	if(b.loc[1]%2 == 0) {
+	    cc.translate(d,0);
+	    cc.scale(-1,1);
+	}
+	if(b.loc[1]%4 == 0) {
+	    cc.translate(0,d);
+	    cc.scale(1,-1);
+	}
+	cc.drawImage(asset_get("block-ladder",ASSET_TYPE_IMAGE).data,
+		     0,0,prop.blocks.size,prop.blocks.size,
+		     0,0,d,d);
     }
     cc.restore();
 }
@@ -165,8 +189,10 @@ function canvas_draw_player(cc,p) {
     var s=prop.canvas.scale;
     var d=prop.blocks.size*prop.canvas.scale;
     var a=null;
-    var t=7;
+    var t=4;
     var f=Math.floor(prop.frames%(t*4)/t);
+    if(game_is_paused())
+	f=0;
     if(!p.on_ground)
 	a=asset_get("neptune-air-"+p.dir,ASSET_TYPE_IMAGE);
     else if(p.motion < -tiny)
@@ -178,12 +204,22 @@ function canvas_draw_player(cc,p) {
     if(a == null || a.status != ASSET_STATUS_READY)
 	return;
     cc.translate(fl((p.loc[0]-0.5)*d),fl(-(p.loc[1]+1)*d));
+    if(prop.game.end != 0) {
+	var time=new Date().getTime()-prop.game.end;
+	if(time < 2000) {
+	    cc.translate(d/2,d);
+	    cc.scale(crange(0,time,2000,1,0),crange(0,time,2000,1,0));
+	    cc.translate(-d/2,-d);
+	}
+    }
     cc.drawImage(a.data,0,0,prop.blocks.size,prop.blocks.size,
 		 0,0,prop.blocks.size*s,prop.blocks.size*s);
 }
 
 function canvas_draw_players(cc) {
+    cc.save();
     canvas_draw_player(cc,prop.player.human);
+    cc.restore();
 }
 
 // WATER
@@ -194,8 +230,7 @@ function canvas_draw_water(cc) {
     var start=((d*(-blocks_get("water_level")))+prop.canvas.size.height/2)+temp;
     cc.fillStyle="rgba(64,191,255,0.2)";
     cc.fillStyle=cc.createLinearGradient(0,start,0,start+prop.canvas.size.height*2);
-    cc.fillStyle.addColorStop(0.0,"rgba(64,191,255,0.2)");
-    cc.fillStyle.addColorStop(0.1,"rgba(32,128,200,0.5)");
+    cc.fillStyle.addColorStop(0.0,"rgba(64,200,255,0.4)");
     cc.fillStyle.addColorStop(1.0,"rgba(0,20,50,0.9)");
     start=Math.max(0,start);
     cc.fillRect(0,start,
@@ -243,10 +278,22 @@ function canvas_draw_menus(cc) {
 	cc.lineWidth=2;
 	cc.strokeStyle="#38f";
 	cc.stroke();
-	cc.beginPath();
     }
-//    cc.arc(prop.canvas.size.width/2,prop.canvas.size.height/2,prop.canvas.size.height/2.5,0,Math.PI*2);
-    cc.stroke();
+    canvas_text_print(cc,10,10,
+		      "Health "+Math.round(prop.player.human.health),"small-inverse","lt");
+    canvas_text_print(cc,prop.canvas.size.width-10,10,
+		      "FPS "+Math.round(prop.time.fps),"small-inverse","rt");
+    if(prop.game.end != 0) {
+	var st=16;
+	var time=new Date().getTime()-prop.game.end;
+	var fade=Math.round(crange(0,time,2000,0,1)*st)/st;
+	if(time > 2000) {
+	    st=8;
+	    fade=Math.round(crange(2000,time,3000,1,0)*st)/st;
+	}
+	cc.fillStyle="rgba(0,0,0,"+fade+")";
+	cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
+    }
     if(prop.menu.stack.length < 1)
 	return;
     cc.fillStyle="rgba(0,0,0,0.8)";
@@ -257,13 +304,7 @@ function canvas_draw_menus(cc) {
     canvas_text_print(cc,10,prop.canvas.size.height-10,
 		      "Music copyright Evan Pattison","small","lb");
     var m=canvas_text_metrics(menu_get(0).title,"large");
-//    cc.drawImage(asset_get("temp",ASSET_TYPE_IMAGE).data,28,28);
     return;
-//    cc.translate(fl(prop.canvas.size.width/2),0);
-    // cc.fillStyle="#fff";
-    // var f=fonts.large;
-    // cc.fillRect(-prop.canvas.size.width/3,10+2.2*(f.metrics.height*prop.canvas.scale),
-    //             prop.canvas.size.width/1.5,3);
 }
 
 function canvas_update() {

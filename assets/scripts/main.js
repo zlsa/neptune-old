@@ -71,12 +71,18 @@ function resize() {
 
 function update() {
     prop.time.frames+=1;
-    prop.time.before=new Date().getTime();
     requestAnimationFrame(update);
-    call_all("update");
     prop.time.after=new Date().getTime();
-    prop.time.frame_time=prop.time.after-prop.time.before;
+    call_all("update");
+    prop.time.frame_time=(prop.time.after-prop.time.before);
+//    prop.time.frame_time=20;
     var s=prop.time.frame_samples;
-    prop.time.frame_time_avg=(prop.time.frame_time*6/s)+((prop.time.frame_time_avg/s)*(s-1));
-    prop.time.fps=1000/prop.time.frame_time;
+    prop.time.frame_time_avg=prop.time.frame_time/prop.game.speedup;//(prop.time.frame_time*6/s)+((prop.time.frame_time_avg/s)*(s-1));
+    if(prop.frames%20==0)
+	prop.time.fps=1000/prop.time.frame_time;
+    prop.time.before=prop.time.after;
+}
+
+function delta() {
+    return(prop.time.frame_time_avg/600);
 }

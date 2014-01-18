@@ -1,22 +1,18 @@
 
 var GAME_STATE_MENU=0; // welcome
-var GAME_STATE_PAUSED=1;
-var GAME_STATE_PLAY=2;
+var GAME_STATE_PLAY=1;
+var GAME_STATE_END=2;
 
 function game_init() {
     prop.game={};
-    
-    prop.game.paused=false;
+
+    prop.game.level=1;
     prop.game.in_window=true;
-    prop.game.gravity=[0,-14];
+    prop.game.gravity=[0,-2];
     prop.game.speedup=1; // good for debugging
+    prop.game.end=0;
 
-    prop.game.state=GAME_STATE_MENU;
-
-    state_add([
-        "prop.game.state"
-    ]);
-    state_restore("game");
+    prop.game.state=GAME_STATE_PLAY;
 
     game_restart();
 
@@ -24,7 +20,7 @@ function game_init() {
 }
 
 function game_is_paused() {
-    if(prop.game.paused || menu_is_open() || !prop.game.in_window)
+    if(prop.game.state != GAME_STATE_PLAY || menu_is_open())
         return(true);
     return(false);
 }
@@ -33,8 +29,18 @@ function game_restart() {
 
 }
 
+function game_next_level() {
+    prop.game.state=GAME_STATE_END;
+    prop.game.end=new Date().getTime();
+    prop.game.level+=1;
+    setTimeout(game_start,2000);
+}
+
 function game_start() {
-    console.log("Started game!");
+    setTimeout(function() {
+	prop.game.end=0;
+    },1000);
+    prop.game.state=GAME_STATE_PLAY;
     menu_clear();
     prop.player.human.restart();
 }

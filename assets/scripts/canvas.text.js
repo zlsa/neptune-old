@@ -195,7 +195,7 @@ fonts["large"]={
             "###       ###",
             "#..#      #.#",
             "#...#     #.#",
-            "#....#    #.#",
+            "#.#..#    #.#",
             "#.##..#   #.#",
             "#.# #..#  #.#",
             "#.#  #..# #.#",
@@ -373,6 +373,34 @@ fonts["large"]={
             "#...........#",
             "#############",
         ],
+        "0":[
+            "  #########  ",
+            " #.........# ",
+            "#.#########.#",
+            "#.#       #.#",
+            "#.#       #.#",
+            "#.#       #.#",
+            "#.#       #.#",
+            "#.#       #.#",
+            "#.#       #.#",
+            "#.#########.#",
+            " #.........# ",
+            "  #########  ",
+        ],
+        "1":[
+            "     ###     ",
+            "     #.#     ",
+            "     #.#     ",
+            "     #.#     ",
+            "     #.#     ",
+            "     #.#     ",
+            "     #.#     ",
+            "     #.#     ",
+            "     #.#     ",
+            "     #.#     ",
+            "     #.#     ",
+            "     ###     ",
+        ],
         "!":[
             "     ###     ",
             "     #.#     ",
@@ -456,6 +484,94 @@ fonts["small"]={
     },
     order:[],
     glyphs:{
+        "-":[
+            "     ",
+            "     ",
+            "     ",
+            "#####",
+            "     ",
+            "     ",
+        ],
+        "0":[
+            "#####",
+            "#   #",
+            "# # #",
+            "# # #",
+            "#   #",
+            "#####",
+        ],
+        "1":[
+            " ##  ",
+            "  #  ",
+            "  #  ",
+            "  #  ",
+            "  #  ",
+            "#####",
+        ],
+        "2":[
+            " ####",
+            "    #",
+            "#####",
+            "#    ",
+            "#    ",
+            "#####",
+        ],
+        "3":[
+            " ### ",
+            "   # ",
+            "#####",
+            "    #",
+            "    #",
+            "#####",
+        ],
+        "4":[
+            "    #",
+            "#   #",
+            "#   #",
+            "#####",
+            "    #",
+            "    #",
+        ],
+        "5":[
+            "###  ",
+            "#    ",
+            "#####",
+            "    #",
+            "    #",
+            "#####",
+        ],
+        "6":[
+            "###  ",
+            "#    ",
+            "#####",
+            "#   #",
+            "#   #",
+            "#####",
+        ],
+        "7":[
+            "#####",
+            "    #",
+            "    #",
+            "    #",
+            "    #",
+            "    #",
+        ],
+        "8":[
+            " ### ",
+            " # # ",
+            "#####",
+            "#   #",
+            "#   #",
+            "#####",
+        ],
+        "9":[
+            "#####",
+            "#   #",
+            "#   #",
+            "#####",
+            "    #",
+            "    #",
+        ],
         "A":[
             "#####",
             "#   #",
@@ -714,10 +830,11 @@ function canvas_text_init() {
     canvas_text_generate();
 }
 
-function canvas_text_generate(font) {
+function canvas_text_generate(font,inverse) {
     if(font == undefined) {
         for(var i in fonts) {
-            canvas_text_generate(i);
+            canvas_text_generate(i,false);
+            canvas_text_generate(i,true);
         }
     } else {
         var c=document.createElement("canvas");
@@ -736,7 +853,10 @@ function canvas_text_generate(font) {
             for(var row=0;row<f.metrics.height;row++) {
                 for(var item=0;item<f.metrics.width;item++) {
                     if(glyphs[i][1][row][item] == "#") {
-			cc.fillStyle="#fff";
+			if(inverse)
+			    cc.fillStyle="#000";
+			else
+			    cc.fillStyle="#fff";
 		    } else if(glyphs[i][1][row][item] == ".") {
 			continue;
 			cc.fillStyle="";
@@ -747,13 +867,16 @@ function canvas_text_generate(font) {
                 }
             }
         }
-        prop.canvas.text.canvases[font]=c;
+	if(inverse)
+            prop.canvas.text.canvases[font+"-inverse"]=c;
+	else
+            prop.canvas.text.canvases[font]=c;
     }
 }
 
 function canvas_text_char(cc,x,y,c,font) {
     c=c.toUpperCase();
-    var f=fonts[font];
+    var f=fonts[font.split("-inverse")[0]];
     var ci=f.order.indexOf(c);
     var s=prop.canvas.scale;
     cc.drawImage(prop.canvas.text.canvases[font],
@@ -765,6 +888,7 @@ function canvas_text_char(cc,x,y,c,font) {
 }
 
 function canvas_text_metrics(text,font) {
+    font=font.split("-inverse")[0];
     var f=fonts[font];
     var s=prop.canvas.scale;
     var tl=text.length;
@@ -773,7 +897,7 @@ function canvas_text_metrics(text,font) {
 }
 
 function canvas_text_print_ll(cc,x,y,text,font) {
-    var f=fonts[font];
+    var f=fonts[font.split("-inverse")[0]];
     var s=prop.canvas.scale;
     for(var i=0;i<text.length;i++) {
         var xoffs=(i*(f.metrics.width+f.metrics.spacing)*s+x);

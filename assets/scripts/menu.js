@@ -22,7 +22,7 @@ function menu_init() {
     ]);
 
     prop.menu.menus["lose_progress"]=new Menu("Restart game?",[
-	["Yes",game_start],
+	["Yes",game_restart],
 	["Cancel!",menu_up]
     ]);
 

@@ -21,26 +21,22 @@ function game_init() {
 
     prop.game.state=GAME_STATE_LOADING;
 
+    loaded("game");
+}
+
+function game_done() {
     for(var i=0;i<levels.length;i++) {
         var l=new Asset(ASSET_TYPE_MAP,levels[i][0],"assets/maps/"+levels[i][0]+".map");
 //        l.onload=blocks_load_from_string;
         assets_add(l);
         audio_add(levels[i][1]);
     }
-
-    game_restart();
-
-    loaded("game");
 }
 
 function game_is_paused() {
     if(prop.game.state != GAME_STATE_PLAY || menu_is_open() || !prop.game.in_window)
         return(true);
     return(false);
-}
-
-function game_restart() {
-
 }
 
 function game_next_level() {
@@ -55,6 +51,11 @@ and will be fixed soon!)");
     } else {
         setTimeout(game_start,2000);
     }
+}
+
+function game_restart() {
+    prop.game.level=0;
+    game_start();
 }
 
 function game_start() {
@@ -83,6 +84,9 @@ function game_resume_menu() {
 }
 
 function game_update() {
+    if(prop.assets.queue.length == 0 && prop.game.state == GAME_STATE_LOADING) {
+        game_restart();
+    }
     var name=levels[prop.game.level][1];
     if(!game_is_paused()) {
         if(!audio_is_playing(name))

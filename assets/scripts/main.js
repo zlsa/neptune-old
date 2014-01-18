@@ -4,11 +4,11 @@ var VERSION=[0,0,1];
 var modules=[
     "prop",
     "state",
-    "assets",
     "game",
-    "blocks",
     "menu",
+    "assets",
     "player",
+    "blocks",
     "audio",
     "ui",
     "canvas",

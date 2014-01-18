@@ -20,27 +20,22 @@ var Player=function(loc,type) {
     this.on_ground=false;
     this.swimming=false;
     this.dir="right";
+    this.walk_speed=1;
     this.health=100;
     this.ai={
 	active:false,
 	jumping:false,
 	direction:1
     };
+    if(this.type == "enemy") {
+        this.ai.active=true;
+        this.walk_speed=0.5;
+        this.width=1;
+    }
 
     this.update_ai=function() {
-//	return;
-	if(this.hit[RIGHT] || this.hit[LEFT]) {
-	    if(this.ai.jumping && this.hit[BOTTOM]) {
-		this.ai.direction*=-1;
-		this.ai.jumping=false;
-	    } else {
-		this.ai.jumping=true;
-		this.jump=true;
-	    }
-	} else {
-	    this.ai.jumping=false;
-	    this.jump=false;
-	}
+	if(this.hit[RIGHT] || this.hit[LEFT])
+	    this.ai.direction*=-1;
 	this.motion=this.ai.direction;
     };
     this.restart=function() {
@@ -68,11 +63,11 @@ var Player=function(loc,type) {
 	    this.dir="left";
 	else if(this.motion > tiny)
 	    this.dir="right";
-        this.speed[0]=this.motion*6;
+        this.speed[0]=this.motion*1.5*this.walk_speed;
         this.speed[0]+=prop.game.gravity[0]*ts;
 	var under=block_get(fl(this.loc[0]),-fl(this.loc[1]+1));
 	var above=block_get(fl(this.loc[0]),-fl(this.loc[1]+2));
-	if(under && under.type == "end") {
+	if(under && under.type == "end" && this.type == "human") {
 	    game_next_level();
 	}
 	if(above && !above.solid()) {
@@ -186,7 +181,7 @@ var Player=function(loc,type) {
 	else
 	    this.swimming=false;
         this.update_physics();
-        this.speed[0]=clamp(-1.5,this.speed[0],1.5);
+        this.speed[0]=clamp(-3,this.speed[0],3);
         this.speed[1]=clamp(-10,this.speed[1],10);
         this.loc[0]+=this.speed[0]*ts;
         this.loc[1]+=this.speed[1]*ts;
@@ -227,16 +222,10 @@ var Player=function(loc,type) {
 	if(this.loc[0] < left+this.width/2) {
 	    this.loc[0]=left+this.width/2+tiny;
 	    this.speed[0]=0;
-	    this.hit[LEFT]=true;
-	} else {
-	    this.hit[LEFT]=false;
 	}
 	if(this.loc[0] > right-this.width/2) {
 	    this.loc[0]=right-this.width/2-tiny;
 	    this.speed[0]=0;
-	    this.hit[RIGHT]=true;
-	} else {
-	    this.hit[RIGHT]=false;
 	}
 	if(this.ai.active)
 	    this.update_ai();
@@ -250,14 +239,22 @@ function player_update() {
     if(game_is_paused())
 	return;
     prop.player.human.update();
+    for(var i=0;i<prop.player.players.length;i++) {
+        prop.player.players[i].update();
+    }
 }
 
 function player_init() {
     prop.player={};
 
+    prop.player.players=[];
     prop.player.human=new Player([0,0]);
 
     loaded("player");
+}
+
+function player_add(p) {
+    prop.player.players.push(p);
 }
 
 function player_warp(x,y) {

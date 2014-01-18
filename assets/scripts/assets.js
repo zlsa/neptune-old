@@ -61,6 +61,7 @@ function asset_download(asset) {
         assets_next();
         return;
     }
+//    console.log("Starting to load "+asset.name+", type == "+asset.type);
     if(asset.type == ASSET_TYPE_IMAGE) {
 	asset.data=new Image();
 	asset.data.src=asset.url;

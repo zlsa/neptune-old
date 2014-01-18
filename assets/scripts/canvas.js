@@ -18,7 +18,10 @@ function canvas_init() {
 	height:0,
 	width:0
     };
+    loaded("canvas");
+}
 
+function canvas_done() {
     var directions=["left","right"];
     for(var i=0;i<directions.length;i++) {
 	var d=directions[i];
@@ -53,7 +56,6 @@ function canvas_init() {
 //    assets_add(new Asset(ASSET_TYPE_IMAGE,"cloud0","assets/images/clouds/cloud0.png"));
     
     canvas_text_init();
-    loaded("canvas");
 }
 
 function canvas_resize() {
@@ -111,9 +113,9 @@ function canvas_draw_cloud(cc,i,f) {
 
 function canvas_draw_horizon(cc) {
     var d=prop.blocks.size*prop.canvas.scale;
-    var temp=prop.ui.pan[1]*prop.canvas.scale;
-    var start=((d*(-blocks_get("water_level")))+prop.canvas.size.height/2)+temp;
-    cc.fillStyle="rgba(128,255,255,0.2)";
+    var start=prop.canvas.size.height/2+
+        (prop.ui.pan[1]-(blocks_get("water_level")*prop.blocks.size))*prop.canvas.scale;
+    cc.fillStyle="rgba(64,32,16,0.2)";
     start=Math.max(0,start);
     cc.fillRect(0,start,prop.canvas.size.width,prop.canvas.size.height);
 }
@@ -203,7 +205,7 @@ function canvas_draw_blocks(cc) {
 
 // PLAYERS
 
-function canvas_draw_player(cc,p) {
+function canvas_draw_player_neptune(cc,p) {
     var s=prop.canvas.scale;
     var d=prop.blocks.size*prop.canvas.scale;
     var a=null;
@@ -236,10 +238,36 @@ function canvas_draw_player(cc,p) {
 		 0,0,prop.blocks.size*s,prop.blocks.size*s);
 }
 
+function canvas_draw_player_enemy(cc,p) {
+    var s=prop.canvas.scale;
+    var d=prop.blocks.size*prop.canvas.scale;
+    var a=null;
+    var t=4;
+    var f=Math.floor(prop.frames%(t*4)/t);
+    if(game_is_paused())
+	f=0;
+    cc.translate(fl((p.loc[0]-0.5)*d),fl(-(p.loc[1]+1)*d));
+    cc.fillStyle="#f0f";
+    cc.fillRect(0,0,d,d);
+}
+
+function canvas_draw_player(cc,p) {
+    if(p.type == "human") {
+        canvas_draw_player_neptune(cc,p);
+    } else {
+        canvas_draw_player_enemy(cc,p);
+    }
+}
+
 function canvas_draw_players(cc) {
     cc.save();
     canvas_draw_player(cc,prop.player.human);
     cc.restore();
+    for(var i=0;i<prop.player.players.length;i++) {
+        cc.save();
+        canvas_draw_player(cc,prop.player.players[i]);
+        cc.restore();
+    }
 }
 
 // WATER

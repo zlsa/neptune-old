@@ -128,6 +128,10 @@ function block_right(loc,md,start,solid) {
 }
 
 function blocks_load_from_string(string) {
+    if(!string)
+        return;
+    if(!prop.blocks)
+        prop.blocks={};
     prop.blocks.blocks={};
     var x=0;
     var y=0;
@@ -137,6 +141,7 @@ function blocks_load_from_string(string) {
 	water_level:0,
 	name:""
     };
+    var enemies=[];
     for(var i=0;i<string.length;i++) {
         var type="none";
         var c=string[i];
@@ -175,6 +180,9 @@ function blocks_load_from_string(string) {
         case "@":
             type="start";
             break;
+        case "1":
+            type="enemy";
+            break;
         case "E":
             type="end";
             break;
@@ -186,7 +194,11 @@ function blocks_load_from_string(string) {
         } else if(type == "none") {
             x+=1;
 	    continue;
-	}
+	} else if(type == "enemy") {
+            enemies.push([[x+0.5,-y-1]]);
+            x+=1;
+	    continue;
+        }
 	var b=new Block([x,y],type);
 	if(type == "ladder")
 	    b.ladder=true;
@@ -195,4 +207,10 @@ function blocks_load_from_string(string) {
     }
     prop.player.human=new Player(prop.blocks.start);
     prop.canvas.dirty.blocks=true;
+    if(prop.player.players)
+        prop.player.players=[];
+    for(var i=0;i<enemies.length;i++) {
+        player_add(new Player(enemies[i][0],"enemy"));
+    }
+    console.log("Loaded level!");
 }

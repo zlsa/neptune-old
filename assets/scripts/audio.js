@@ -1,10 +1,14 @@
 
 function audio_init() {
     prop.audio={};
-
-    audio_add("title");
+    
+    prop.audio.names=[];
 
     loaded("audio");
+}
+
+function audio_done() {
+    audio_add("title");
 }
 
 function audio_add(name) {
@@ -20,9 +24,21 @@ function audio_add(name) {
                     a.data.loop=true;
                 })
     assets_add(a);
+    if(!prop.audio)
+        prop.audio={};
+    if(!prop.audio.names)
+        prop.audio.names=[];
+    prop.audio.names.push(name);
+}
+
+function audio_pause_all() {
+    for(var i=0;i<prop.audio.names.length;i++) {
+        audio_pause(prop.audio.names[i]);
+    }
 }
 
 function audio_start(name) {
+    audio_pause_all();
     var start=asset_get(name+"-start",ASSET_TYPE_AUDIO);
     var loop=asset_get(name+"-loop",ASSET_TYPE_AUDIO);
     if(start && start.status == ASSET_STATUS_READY &&
@@ -47,6 +63,7 @@ function audio_start(name) {
 }
 
 function audio_play(name) {
+    audio_pause_all();
     var start=asset_get(name+"-start",ASSET_TYPE_AUDIO);
     var loop=asset_get(name+"-loop",ASSET_TYPE_AUDIO);
     if(start && start.status == ASSET_STATUS_READY &&

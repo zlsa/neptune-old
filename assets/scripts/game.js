@@ -87,8 +87,12 @@ function game_resume_menu() {
 }
 
 function game_update() {
-    if(prop.assets.queue.length == 0 && prop.game.state == GAME_STATE_LOADING) {
-//        game_restart();
+    var time=new Date().getTime()-prop.assets.last;
+    if(prop.assets.last != 0) {
+        if(time > 1000) {
+            prop.game.loaded=new Date().getTime();
+            prop.assets.last=0;
+        }
     }
     var name=levels[prop.game.level][1];
     if((prop.game.state == GAME_STATE_END ||

@@ -23,6 +23,7 @@ function assets_init() {
 
     prop.assets.assets=[];
     prop.assets.cache={};
+    prop.assets.last=0;
 
     prop.assets.queue=[];
 
@@ -118,9 +119,8 @@ function asset_download(asset) {
 
 function assets_next() {
     prop.assets.queue.splice(0,1);
-    if(prop.assets.queue.length == 0 && prop.game.state == GAME_STATE_LOADING)
-        prop.game.loaded=new Date().getTime();
-//	game_start();
+    if(prop.assets.queue.length == 0)
+        prop.assets.last=new Date().getTime();
     assets_start_queue();
 }
 

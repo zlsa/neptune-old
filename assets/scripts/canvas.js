@@ -327,21 +327,6 @@ function canvas_draw_menus(cc) {
 	cc.strokeStyle="#38f";
 	cc.stroke();
     }
-    if(prop.game.state == GAME_STATE_LOADING || prop.game.loaded != 0) {
-	var time=new Date().getTime()-prop.game.loaded;
-	if(prop.game.loaded == 0)
-	    time=0;
-	var st=10;
-	var fade=Math.round(crange(0,time,1000,1,0)*st)/st;
-	cc.globalAlpha=fade;
-	cc.fillStyle="#000";
-	cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
-	canvas_text_print(cc,prop.canvas.size.width/2,prop.canvas.size.height/2,
-			  "LOADING...","large","cc");
-	if(time > 1000)
-	    prop.game.loaded=0;
-	cc.globalAlpha=1;
-    }
     canvas_text_print(cc,10,10,
 		      "Health "+Math.round(prop.player.human.health),"small-inverse","lt");
     canvas_text_print(cc,prop.canvas.size.width-10,10,
@@ -368,7 +353,23 @@ function canvas_draw_menus(cc) {
 		      "Music copyright Evan Pattison","small","lb");
     canvas_text_print(cc,prop.canvas.size.width-15,prop.canvas.size.height+5,
 		      prop.about.version,"small","rb");
-    var m=canvas_text_metrics(menu_get(0).title,"large");
+    if(prop.game.state == GAME_STATE_LOADING || prop.game.loaded != 0) {
+	var time=new Date().getTime()-prop.game.loaded;
+	if(prop.game.loaded == 0)
+	    time=0;
+	var st=10;
+	var fade=Math.round(crange(0,time,1000,1,0)*st)/st;
+        if(time < 1000) {
+	    cc.globalAlpha=fade;
+	    cc.fillStyle="#000";
+	    cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
+	    canvas_text_print(cc,prop.canvas.size.width/2,prop.canvas.size.height/2,
+			      "LOADING...","large","cc");
+	    if(time > 1000)
+	        prop.game.loaded=0;
+	    cc.globalAlpha=1;
+        }
+    }
     return;
 }
 

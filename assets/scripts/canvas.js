@@ -362,10 +362,12 @@ function canvas_draw_menus(cc) {
     cc.fillStyle="#000";
     cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
     canvas_draw_menu(cc,menu_get(0));
-    canvas_text_print(cc,10,prop.canvas.size.height-30,
+    canvas_text_print(cc,15,prop.canvas.size.height-15,
 		      "Game copyright ZLSA","small","lb");
-    canvas_text_print(cc,10,prop.canvas.size.height-10,
+    canvas_text_print(cc,15,prop.canvas.size.height+5,
 		      "Music copyright Evan Pattison","small","lb");
+    canvas_text_print(cc,prop.canvas.size.width-15,prop.canvas.size.height+5,
+		      prop.about.version,"small","rb");
     var m=canvas_text_metrics(menu_get(0).title,"large");
     return;
 }

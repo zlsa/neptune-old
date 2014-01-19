@@ -8,6 +8,7 @@ var Player=function(loc,type) {
     if(!type)
         type="human"
     this.dead=false;
+    this.dead_amount=0;
     this.startpos=loc;
     this.loc=[loc[0],loc[1]];
     this.width=0.4;
@@ -35,7 +36,18 @@ var Player=function(loc,type) {
     }
 
     this.update_ai=function() {
-	if(this.hit[RIGHT] || this.hit[LEFT])
+        var left_bottom=block_get(fl(this.loc[0]-0.5),-fl(this.loc[1]));
+        var right_bottom=block_get(fl(this.loc[0]+0.5),-fl(this.loc[1]));
+        if(left_bottom && left_bottom.solid())
+            left_bottom=true;
+        else
+            left_bottom=false;
+        if(right_bottom && right_bottom.solid())
+            right_bottom=true;
+        else
+            right_bottom=false;
+	if(this.hit[RIGHT] || this.hit[LEFT] ||
+           !left_bottom || !right_bottom)
 	    this.ai.direction*=-1;
 	this.motion=this.ai.direction;
     };
@@ -183,22 +195,30 @@ var Player=function(loc,type) {
                    (this.loc[1] > player.loc[1]+0.3) &&
                    (this.speed[1] < 0)) {
                     player.dead=true;
+                    this.speed[1]=1.8;
                 } else if((this.loc[1] < player.loc[1]+0.6) &&
                           (this.loc[1] > player.loc[1]-0.1)) {
                     this.health-=1*ts;
+                    if(this.loc[1] < player.loc[1])
+                        this.speed[0]=-2;
+                    else
+                        this.speed[0]=2;
                 }
             }
         }
     };
     this.update=function() {
-        if(this.dead)
-            return;
 	var ts=delta();
+        if(this.dead) {
+            this.dead_amount+=1*ts;
+            return;
+        }
 	if(this.loc[1] < blocks_get("water_level"))
 	    this.swimming=true;
 	else
 	    this.swimming=false;
         this.update_physics();
+	this.update_health();
         this.speed[0]=clamp(-3,this.speed[0],3);
         this.speed[1]=clamp(-10,this.speed[1],10);
         this.loc[0]+=this.speed[0]*ts;
@@ -249,7 +269,6 @@ var Player=function(loc,type) {
 	    this.update_ai();
 	if(this.climbing)
 	    this.on_ground=true;
-	this.update_health();
     };
 }
 

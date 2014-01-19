@@ -34,7 +34,8 @@ function game_done() {
 }
 
 function game_is_paused() {
-    if(prop.game.state != GAME_STATE_PLAY || menu_is_open() || !prop.game.in_window)
+    if((prop.game.state != GAME_STATE_PLAY && prop.game.state != GAME_STATE_END) ||
+       menu_is_open() || !prop.game.in_window)
         return(true);
     return(false);
 }

@@ -29,7 +29,7 @@ function canvas_done() {
 			 "assets/images/neptune/character/stand.png"));
 //    assets_add(new Asset(ASSET_TYPE_IMAGE,"bot-walk0",
 //			 "assets/images/enemies/bot/walk0.png"));
-    for(var i=0;i<2;i++) {
+    for(var i=0;i<3;i++) {
 	assets_add(new Asset(ASSET_TYPE_IMAGE,"bot-walk"+i,
 			     "assets/images/enemies/bot/walk"+i+".png"));
     }
@@ -242,11 +242,13 @@ function canvas_draw_player_neptune(cc,p) {
 }
 
 function canvas_draw_player_enemy(cc,p) {
+    if(p.dead && p.dead_amount > 10)
+        return;
     var s=prop.canvas.scale;
     var d=prop.blocks.size*prop.canvas.scale;
     var a=null;
     var t=5;
-    var f=Math.floor(prop.frames%(t*2)/t);
+    var f=Math.floor(prop.frames%(t*3)/t);
     if(game_is_paused())
 	f=0;
     var a=asset_get("bot-walk"+f,ASSET_TYPE_IMAGE);
@@ -257,13 +259,19 @@ function canvas_draw_player_enemy(cc,p) {
         cc.translate(d,0);
         cc.scale(-1,1);
     }
+    if(p.dead) {
+        cc.globalAlpha=crange(0,p.dead_amount,5,1,0);
+        if(p.dead_amount < Math.PI/2)
+            cc.translate(0,-(d/2*Math.sin(p.dead_amount*2)));
+        else
+            cc.translate(0,trange(Math.PI/2,p.dead_amount,10,0,(20*d)*
+                                  crange(Math.PI/2,p.dead_amount,10,1,5)));
+    }
     cc.drawImage(a.data,0,0,prop.blocks.size,prop.blocks.size,
 		 0,0,prop.blocks.size*s,prop.blocks.size*s);
 }
 
 function canvas_draw_player(cc,p) {
-    if(p.dead)
-        return;
     if(p.type == "human") {
         canvas_draw_player_neptune(cc,p);
     } else {

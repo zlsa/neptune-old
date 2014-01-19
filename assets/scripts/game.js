@@ -88,7 +88,7 @@ function game_resume_menu() {
 
 function game_update() {
     var time=new Date().getTime()-prop.assets.last;
-    if(prop.assets.last != 0) {
+    if(prop.assets.last != 0 && prop.assets.queue.length == 0) {
         if(time > 1000) {
             prop.game.loaded=new Date().getTime();
             prop.assets.last=0;

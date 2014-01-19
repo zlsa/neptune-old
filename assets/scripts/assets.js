@@ -115,6 +115,7 @@ function asset_download(asset) {
 		asset.onerror(e);
 	};
     }
+    prop.assets.last=new Date().getTime();
 }
 
 function assets_next() {

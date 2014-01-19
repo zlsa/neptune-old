@@ -351,8 +351,6 @@ function canvas_draw_menus(cc) {
 		      "Game copyright ZLSA","small","lb");
     canvas_text_print(cc,15,prop.canvas.size.height+5,
 		      "Music copyright Evan Pattison","small","lb");
-    canvas_text_print(cc,prop.canvas.size.width-15,prop.canvas.size.height+5,
-		      prop.about.version,"small","rb");
     if(prop.game.state == GAME_STATE_LOADING || prop.game.loaded != 0) {
 	var time=new Date().getTime()-prop.game.loaded;
 	if(prop.game.loaded == 0)
@@ -370,6 +368,9 @@ function canvas_draw_menus(cc) {
 	    cc.globalAlpha=1;
         }
     }
+    if(menu_is_open())
+        canvas_text_print(cc,prop.canvas.size.width-15,prop.canvas.size.height+5,
+		          prop.about.version,"small","rb");
     return;
 }
 

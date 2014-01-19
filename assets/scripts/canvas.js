@@ -23,18 +23,19 @@ function canvas_init() {
 
 function canvas_done() {
     var directions=["left","right"];
-    for(var i=0;i<directions.length;i++) {
-	var d=directions[i];
-	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-stand-"+d,
-			     "assets/images/neptune/character/"+d+"/stand.png"));
-	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-air-"+d,
-			     "assets/images/neptune/character/"+d+"/stand.png"));
+    assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-stand",
+			 "assets/images/neptune/character/stand.png"));
+    assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-air",
+			 "assets/images/neptune/character/stand.png"));
+//    assets_add(new Asset(ASSET_TYPE_IMAGE,"bot-walk0",
+//			 "assets/images/enemies/bot/walk0.png"));
+    for(var i=0;i<2;i++) {
+	assets_add(new Asset(ASSET_TYPE_IMAGE,"bot-walk"+i,
+			     "assets/images/enemies/bot/walk"+i+".png"));
     }
     for(var i=0;i<4;i++) {
-	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-left"+i,
-			     "assets/images/neptune/character/left/walk"+i+".png"));
-	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-right"+i,
-			     "assets/images/neptune/character/right/walk"+i+".png"));
+	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-walk"+i,
+			     "assets/images/neptune/character/walk"+i+".png"));
     }
     for(var i=0;i<1;i++) {
 	assets_add(new Asset(ASSET_TYPE_IMAGE,
@@ -214,16 +215,18 @@ function canvas_draw_player_neptune(cc,p) {
     if(game_is_paused())
 	f=0;
     if(!p.on_ground)
-	a=asset_get("neptune-air-"+p.dir,ASSET_TYPE_IMAGE);
-    else if(p.motion < -tiny)
-	a=asset_get("neptune-left"+f,ASSET_TYPE_IMAGE);
-    else if(p.motion > tiny)
-	a=asset_get("neptune-right"+f,ASSET_TYPE_IMAGE);
+	a=asset_get("neptune-air",ASSET_TYPE_IMAGE);
+    else if(Math.abs(p.motion) < tiny)
+	a=asset_get("neptune-stand",ASSET_TYPE_IMAGE);
     else
-	a=asset_get("neptune-stand-"+p.dir,ASSET_TYPE_IMAGE);
+	a=asset_get("neptune-walk"+f,ASSET_TYPE_IMAGE);
     if(a == null || a.status != ASSET_STATUS_READY)
 	return;
     cc.translate(fl((p.loc[0]-0.5)*d),fl(-(p.loc[1]+1)*d));
+    if(p.dir == "left") {
+        cc.translate(d,0);
+        cc.scale(-1,1);
+    }
     if(prop.game.end != 0) {
 	var time=new Date().getTime()-prop.game.end;
 	cc.translate(d/2,d);
@@ -242,16 +245,25 @@ function canvas_draw_player_enemy(cc,p) {
     var s=prop.canvas.scale;
     var d=prop.blocks.size*prop.canvas.scale;
     var a=null;
-    var t=4;
-    var f=Math.floor(prop.frames%(t*4)/t);
+    var t=5;
+    var f=Math.floor(prop.frames%(t*2)/t);
     if(game_is_paused())
 	f=0;
+    var a=asset_get("bot-walk"+f,ASSET_TYPE_IMAGE);
+    if(a == null || a.status != ASSET_STATUS_READY)
+	return;
     cc.translate(fl((p.loc[0]-0.5)*d),fl(-(p.loc[1]+1)*d));
-    cc.fillStyle="#f0f";
-    cc.fillRect(0,0,d,d);
+    if(p.dir == "left") {
+        cc.translate(d,0);
+        cc.scale(-1,1);
+    }
+    cc.drawImage(a.data,0,0,prop.blocks.size,prop.blocks.size,
+		 0,0,prop.blocks.size*s,prop.blocks.size*s);
 }
 
 function canvas_draw_player(cc,p) {
+    if(p.dead)
+        return;
     if(p.type == "human") {
         canvas_draw_player_neptune(cc,p);
     } else {

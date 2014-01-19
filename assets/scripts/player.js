@@ -7,6 +7,7 @@ var LEFT=3;
 var Player=function(loc,type) {
     if(!type)
         type="human"
+    this.dead=false;
     this.startpos=loc;
     this.loc=[loc[0],loc[1]];
     this.width=0.4;
@@ -21,7 +22,7 @@ var Player=function(loc,type) {
     this.swimming=false;
     this.dir="right";
     this.walk_speed=1;
-    this.health=100;
+    this.health=10;
     this.ai={
 	active:false,
 	jumping:false,
@@ -30,7 +31,7 @@ var Player=function(loc,type) {
     if(this.type == "enemy") {
         this.ai.active=true;
         this.walk_speed=0.5;
-        this.width=1;
+        this.width=0.5;
     }
 
     this.update_ai=function() {
@@ -50,7 +51,7 @@ var Player=function(loc,type) {
         this.on_ground=false;
         this.swimming=false;
         this.dir="right";
-        this.health=100;
+//`        this.health=10;
         this.ai={
 	    active:false,
 	    jumping:false,
@@ -169,12 +170,29 @@ var Player=function(loc,type) {
     // 	return(-(right_distance));
     // };
     this.update_health=function() {
-	return;
+        if(this.type != "human")
+            return;
 	var ts=delta();
-	if(this.hit[TOP] || this.hit[LEFT] || this.hit[RIGHT])
-	    this.health-=1*ts;
+        for(var i=0;i<prop.player.players.length;i++) {
+            var player=prop.player.players[i];
+            if(player.dead)
+                continue;
+            if((this.loc[0]-this.width < player.loc[0]) &&
+               (this.loc[0]+this.width > player.loc[0])) {
+                if((this.loc[1] < player.loc[1]+0.6) &&
+                   (this.loc[1] > player.loc[1]+0.3) &&
+                   (this.speed[1] < 0)) {
+                    player.dead=true;
+                } else if((this.loc[1] < player.loc[1]+0.6) &&
+                          (this.loc[1] > player.loc[1]-0.1)) {
+                    this.health-=1*ts;
+                }
+            }
+        }
     };
     this.update=function() {
+        if(this.dead)
+            return;
 	var ts=delta();
 	if(this.loc[1] < blocks_get("water_level"))
 	    this.swimming=true;

@@ -123,8 +123,12 @@ function menu_get(offset) {
 
 function menu_update() {
     if(menu_is_open()) {
-        if(!audio_is_playing("title") && prop.menu.stack[0] == "main")
-            audio_start("title");
+        if(!audio_is_playing("title") && prop.menu.stack[0] == "main") {
+            var time=new Date().getTime()-prop.assets.last;
+            if(prop.assets.last != 0 && prop.assets.queue.length == 0) {
+                audio_start("title");
+            }
+        }
     } else {
         if(audio_is_playing("title"))
             audio_stop("title");

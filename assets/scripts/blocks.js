@@ -162,7 +162,7 @@ function blocks_load_from_string(string) {
             continue;
         }
         switch(c) {
-        case "*":
+        case "S":
             type="sand";
             break;
         case "#":
@@ -171,7 +171,7 @@ function blocks_load_from_string(string) {
         case "H":
             type="ladder";
             break;
-        case "\"":
+        case "_":
             type="grass";
             break;
         case ".":

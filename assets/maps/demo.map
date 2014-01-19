@@ -1,17 +1,17 @@
-Physics demo map:-4.5
-                                                                                        "*******
-        "       "                                                                      "********
-        **"     *"                                              "  "                 ""*********
-  *" " *****"1"***"  ""*"                                    ""*****  H             "***********
-****** ********************     H          "  "    "   "  ""*****     H      H     "*****1******
-***** "***@  "  "               H        "*******H***********         H      H     ****** " ****
-*******************         "   H  "  ***** ** **H* ***      ""       H      H     ******** ****
-********** ***********"   ****  H **** **********H " "    "  **    "  H " 1  H  *  E****  "  ***
-************ *** *******"   * ****   ***  *    ******* "  *** **********************************
-**************************                          "  ********* ******** **********************
-******* ************* *************    1    *************  *********************** *************
-**************** *** ********* ******************* **************** ***************** **** *****
-************************* *********  ****   ** ******** ****************** *********************
-***********************************   *      **************** ******* *************** **********
-***********************************   *      ******  *********** ********* *********************
-***********************************   *      *********************** ************* *************
+Physics demo map:-6.5
+                                                                                        _SSSSSSS
+        _       _                                                                    ___SSSSSSSS
+        SS_     S_                                              _  _                 SSSSSSSSSSS
+  S_ _ SSSSS_1_SSS_  __S_                                 _  __SSSSS  H             _SSSSSSSSSSS
+SSSSSS SSSSSSSSSSSSSSSSSSSS     H          _  _    _   _ _SSSSSSS     H      H     _SSSSS1SSSSSS
+SSSSS _SSS@  _  _         H     H        __SSSSSSHSSSSSSSSS           H      H     SSSSSS _ SSSS
+SSSSSSSSSSSSSSSSSSS       H _   H  _  _SSSS SS SSHS SSS      __       H      H     SSSSSSSS SSSS
+SSSSSSSSSS SSSSSSSSSSS_   HSSS 1H_ SSSSSSSSSSSSSSH _      _  SS    _  H _    H1 S  ESSSS  _  SSS
+SSSSSSSSSSSS SSS SSSSSSS_   S SSSSSS      S    SSHSSS  _ _SSS SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+SSSSSSSSSSSSSSSSSSSSSSSSSS                          _  SSSSSSSSS SSSSSSSS SSSSSSSSSSSSSSSSSSSSSS
+SSSSSSS SSSSSSSSSSSSS SSSSSSSSS      S      1    SSSSSSSS  SSSSSSSSSSSSSSSSSSSSSSS SSSSSSSSSSSSS
+SSSSSSSSSSSSSSSS SSS SSSSSSSSS SSSSSSSSSSSSSSSSSSS SSSSSSSSSSSSSSSS SSSSSSSSSSSSSSSSS SSSS SSSSS
+SSSSSSSSSSSSSSSSSSSSSSSSS SSSSSSSSS  SSSS   SS SSSSSSSS SSSSSSSSSSSSSSSSSS SSSSSSSSSSSSSSSSSSSSS
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS   S      SSSSSSSSSSSSSSSS SSSSSSS SSSSSSSSSSSSSSS SSSSSSSSSS
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS   S      SSSSSS  SSSSSSSSSSS SSSSSSSSS SSSSSSSSSSSSSSSSSSSSS
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS   S      SSSSSSSSSSSSSSSSSSSSSSS SSSSSSSSSSSSS SSSSSSSSSSSSS

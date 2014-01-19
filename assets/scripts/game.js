@@ -41,6 +41,7 @@ function game_is_paused() {
 }
 
 function game_next_level() {
+    console.log("Next level");
     prop.game.state=GAME_STATE_END;
     prop.game.end=new Date().getTime();
     prop.game.level+=1;

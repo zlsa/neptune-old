@@ -46,9 +46,12 @@ var Player=function(loc,type) {
             right_bottom=true;
         else
             right_bottom=false;
-	if(this.hit[RIGHT] || this.hit[LEFT] ||
-           !left_bottom || !right_bottom)
+	if(this.hit[RIGHT] || this.hit[LEFT])
 	    this.ai.direction*=-1;
+        if(!left_bottom)
+            this.ai.direction=1;
+        else if(!right_bottom)
+            this.ai.direction=-1;
 	this.motion=this.ai.direction;
     };
     this.restart=function() {
@@ -81,7 +84,8 @@ var Player=function(loc,type) {
 	var under=block_get(fl(this.loc[0]),-fl(this.loc[1]+1));
 	var above=block_get(fl(this.loc[0]),-fl(this.loc[1]+2));
 	if(under && under.type == "end" && this.type == "human") {
-	    game_next_level();
+            if(prop.game.state == GAME_STATE_PLAY)
+	        game_next_level();
 	}
 	if(above && !above.solid()) {
 	    above=null;

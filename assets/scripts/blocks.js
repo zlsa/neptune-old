@@ -33,8 +33,8 @@ function blocks_get(key) {
 }
 
 function blocks_calculate_bounds() {
-    if(game_is_paused())
-	return;
+//    if(game_is_paused())
+//	return;
     var d=prop.blocks.size//*prop.canvas.scale;
     var lb=Math.floor((prop.ui.pan[0]-prop.canvas.size.width/2)/d)-1;
     var rb=Math.ceil((prop.ui.pan[0]+prop.canvas.size.width/2)/d)+1;

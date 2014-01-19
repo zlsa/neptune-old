@@ -6,7 +6,7 @@ var GAME_STATE_END=3;
 
 var levels=[
     ["demo","grassland"],
-    ["level1","foo"]
+    ["level1","grassland"]
 ];
 
 function game_init() {
@@ -44,10 +44,8 @@ function game_next_level() {
     prop.game.end=new Date().getTime();
     prop.game.level+=1;
     if(prop.game.level >= levels.length) {
-        alert("Sorry, you've finished! (This is just a placeholder message \
-and will be fixed soon!)");
-        prop.game.level=0;
-        game_start();
+        alert("You've completed the game! Do it again!...");
+        location.reload();
     } else {
         setTimeout(game_start,2000);
     }
@@ -68,12 +66,17 @@ function game_start() {
     }
     if(prop.game.state == GAME_STATE_LOADING)
 	prop.game.loaded=new Date().getTime();
-    prop.game.state=GAME_STATE_PLAY;
+    prop.game.state=GAME_STATE_END;
+    prop.game.end=new Date().getTime()-2000;
     menu_clear();
     prop.player.human.restart();
     var name=levels[prop.game.level][1];
-    if(!audio_is_playing(name))
-        audio_start(name);
+    setTimeout(function() {
+        prop.game.state=GAME_STATE_PLAY;
+        prop.game.end=0;
+    },1000);
+//    if(!audio_is_playing(name))
+    audio_start(name);
 }
 
 function game_resume_menu() {
@@ -85,10 +88,12 @@ function game_resume_menu() {
 
 function game_update() {
     if(prop.assets.queue.length == 0 && prop.game.state == GAME_STATE_LOADING) {
-        game_restart();
+//        game_restart();
     }
     var name=levels[prop.game.level][1];
-    if(!game_is_paused()) {
+    if((prop.game.state == GAME_STATE_END ||
+        prop.game.state == GAME_STATE_PLAY) &&
+       (!menu_is_open() && prop.game.in_window)) {
         if(!audio_is_playing(name))
             audio_play(name);
     } else {

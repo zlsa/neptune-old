@@ -16,6 +16,13 @@ function menu_init() {
 	["Help","help"]
     ]);
 
+    prop.menu.menus["paused"]=new Menu("Paused",[
+	["Resume game",menu_clear],
+	["Start new game","start"],
+	["Options","options"],
+	["Help","help"]
+    ]);
+
     prop.menu.menus["start"]=new Menu("Start game",[
 	["New game","lose_progress"],
 	["Resume saved",game_resume_menu]
@@ -34,7 +41,7 @@ function menu_init() {
 	["No help"]
     ]);
 
-    prop.menu.stack=[];
+    prop.menu.stack=["main"];
     
     loaded("menu");
 }
@@ -54,14 +61,15 @@ function menu_is_open() {
 }
 
 function menu_toggle() {
-    if(menu_is_open())
+    if(menu_is_open()) {
 	menu_up();
-    else
+    } else {
 	menu_open();
+    }
 }
 
 function menu_open() {
-    prop.menu.stack=["main"];
+    prop.menu.stack=["paused"];
     prop.canvas.dirty.menu=true;
 }
 
@@ -72,6 +80,9 @@ function menu_up() {
     } else {
 	var m=prop.menu.stack.pop();
 	prop.menu.menus[m].selected=0;
+    }
+    if(prop.game.state == GAME_STATE_LOADING && prop.menu.stack.length == 0) {
+        prop.menu.stack=["main"];
     }
     prop.canvas.dirty.menu=true;
     return last;
@@ -112,7 +123,7 @@ function menu_get(offset) {
 
 function menu_update() {
     if(menu_is_open()) {
-        if(!audio_is_playing("title"))
+        if(!audio_is_playing("title") && prop.menu.stack[0] == "main")
             audio_start("title");
     } else {
         if(audio_is_playing("title"))

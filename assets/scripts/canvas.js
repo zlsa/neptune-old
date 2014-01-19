@@ -132,7 +132,7 @@ function canvas_draw_atmosphere(cc) {
     for(var i=0;i<4;i++) {
 	canvas_draw_cloud(cc,i,prop.frames);
     }
-    canvas_draw_horizon(cc);
+//    canvas_draw_horizon(cc);
 }
 
 // BLOCKS
@@ -302,7 +302,7 @@ function canvas_draw_menu(cc,menu) {
     }
     for(var i=0;i<menu.items.length;i++) {
 	var item=menu.items[i];
-	var o=i+2.5;
+	var o=i+3;
 	m=canvas_text_metrics(item[0],"large");
 	m[0]=mw;
 	if(menu.selected == i) {
@@ -313,7 +313,7 @@ function canvas_draw_menu(cc,menu) {
 	}
 	canvas_draw_item(cc,o,item[0],"large",mw);
     }
-    canvas_draw_item(cc,1,menu.title,"large");
+    canvas_draw_item(cc,1.5,menu.title,"large");
 }
 
 function canvas_draw_menus(cc) {
@@ -359,7 +359,7 @@ function canvas_draw_menus(cc) {
     }
     if(prop.menu.stack.length < 1)
 	return;
-    cc.fillStyle="rgba(0,0,0,0.8)";
+    cc.fillStyle="#000";
     cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
     canvas_draw_menu(cc,menu_get(0));
     canvas_text_print(cc,10,prop.canvas.size.height-30,
@@ -380,7 +380,7 @@ function canvas_update() {
         canvas_draw_atmosphere(cc);
         cc.restore();
     }
-    if(prop.canvas.dirty.blocks) {
+    if(prop.canvas.dirty.blocks || true) {
         prop.canvas.dirty.blocks=false;
         var cc=canvas_get("blocks");
         cc.save();

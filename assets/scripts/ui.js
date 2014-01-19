@@ -16,6 +16,8 @@ var keysym={
 function ui_init() {
     prop.ui={};
 
+    prop.ui.pan=[0,0];
+
     prop.ui.keys={};
     
     $(window).keydown(function(e) {

@@ -3,7 +3,7 @@ var prop={};
 
 function prop_init() {
     prop.about={};
-    prop.about.version="0.1.6";
+    prop.about.version="0.1.7";
     prop.time={};
     prop.time.start=new Date().getTime();
     prop.time.before=0;

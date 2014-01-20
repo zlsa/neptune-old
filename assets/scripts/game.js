@@ -13,6 +13,7 @@ function game_init() {
     prop.game={};
 
     prop.game.level=0;
+    prop.game.lives=4;
     prop.game.in_window=true;
     prop.game.gravity=[0,-2];
     prop.game.speedup=1; // good for debugging
@@ -55,6 +56,7 @@ function game_next_level() {
 
 function game_restart() {
     prop.game.level=0;
+    prop.game.lives=4;
     game_start();
 }
 

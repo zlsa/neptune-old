@@ -16,6 +16,11 @@ function menu_init() {
 	["Help","help"]
     ]);
 
+    prop.menu.menus["dead"]=new Menu("You died",[
+	["Restart level",game_start],
+	["Main menu","main"],
+    ]);
+
     prop.menu.menus["paused"]=new Menu("Paused",[
 	["Resume game",menu_clear],
 	["Start new game","start"],

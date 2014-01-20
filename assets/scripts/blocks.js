@@ -3,6 +3,7 @@ var Block=function(loc,type) {
     this.loc=loc;
     this.type=type;
     this.ladder=false;
+    this.used=false;
     this.solid=function() {
 	if(this.type == "sand" ||
 	   this.type == "dirt")
@@ -167,6 +168,9 @@ function blocks_load_from_string(string) {
             break;
         case "#":
             type="dirt";
+            break;
+        case "+":
+            type="health";
             break;
         case "H":
             type="ladder";

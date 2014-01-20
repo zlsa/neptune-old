@@ -1,4 +1,5 @@
 
+var MAX_HEALTH=5;
 var TOP=0;
 var RIGHT=1;
 var BOTTOM=2;
@@ -23,7 +24,7 @@ var Player=function(loc,type) {
     this.swimming=false;
     this.dir="right";
     this.walk_speed=1;
-    this.health=10;
+    this.health=MAX_HEALTH;
     this.ai={
 	active:false,
 	jumping:false,
@@ -31,7 +32,7 @@ var Player=function(loc,type) {
     };
     if(this.type == "enemy") {
         this.ai.active=true;
-        this.walk_speed=0.5;
+        this.walk_speed=1.1;
         this.width=0.5;
     }
 
@@ -66,7 +67,7 @@ var Player=function(loc,type) {
         this.on_ground=false;
         this.swimming=false;
         this.dir="right";
-//`        this.health=10;
+        this.health=MAX_HEALTH;
         this.ai={
 	    active:false,
 	    jumping:false,
@@ -82,7 +83,13 @@ var Player=function(loc,type) {
         this.speed[0]=this.motion*1.5*this.walk_speed;
         this.speed[0]+=prop.game.gravity[0]*ts;
 	var under=block_get(fl(this.loc[0]),-fl(this.loc[1]+1));
+	var under_player=block_get(fl(this.loc[0]),-fl(this.loc[1]+1.5)); // undr plyr not ft
 	var above=block_get(fl(this.loc[0]),-fl(this.loc[1]+2));
+        if(under_player && under_player.type == "health" && !under_player.used &&
+           this.health < MAX_HEALTH-1 && this.type == "human") {
+            this.health+=1;
+            under_player.used=new Date().getTime();
+        }
 	if(under && under.type == "end" && this.type == "human") {
             if(prop.game.state == GAME_STATE_PLAY)
 	        game_next_level();
@@ -204,11 +211,15 @@ var Player=function(loc,type) {
                           (this.loc[1] > player.loc[1]-0.1)) {
                     this.health-=1*ts;
                     if(this.loc[1] < player.loc[1])
-                        this.speed[0]=-2;
+                        this.speed[0]=player.speed[0];
                     else
-                        this.speed[0]=2;
+                        this.speed[0]=player.speed[0];
                 }
             }
+        }
+        if(this.health < 0) {
+            prop.menu.stack=["dead"];
+            prop.game.lives-=1;
         }
     };
     this.update=function() {

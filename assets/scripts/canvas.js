@@ -33,6 +33,10 @@ function canvas_done() {
 	assets_add(new Asset(ASSET_TYPE_IMAGE,"bot-walk"+i,
 			     "assets/images/enemies/bot/walk"+i+".png"));
     }
+    var pickups=["health"];
+    for(var i=0;i<pickups.length;i++)
+        assets_add(new Asset(ASSET_TYPE_IMAGE,"pickup-"+pickups[i],
+			     "assets/images/blocks/"+pickups[i]+"/"+pickups[i]+".png"));
     for(var i=0;i<4;i++) {
 	assets_add(new Asset(ASSET_TYPE_IMAGE,"neptune-walk"+i,
 			     "assets/images/neptune/character/walk"+i+".png"));
@@ -131,7 +135,7 @@ function canvas_draw_atmosphere(cc) {
     cc.fillStyle="#adf";
     cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
     for(var i=0;i<4;i++) {
-	canvas_draw_cloud(cc,i,prop.frames);
+	canvas_draw_cloud(cc,i,prop.time.frames);
     }
 //    canvas_draw_horizon(cc);
 }
@@ -141,6 +145,7 @@ function canvas_draw_atmosphere(cc) {
 function canvas_draw_block(cc,b) {
     if(block_can_clip(b))
 	return;
+    var ts=delta();
     cc.save();
     var d=prop.blocks.size*prop.canvas.scale;
     var s=prop.canvas.scale;
@@ -194,6 +199,18 @@ function canvas_draw_block(cc,b) {
 	cc.drawImage(asset_get("block-ladder",ASSET_TYPE_IMAGE).data,
 		     0,0,prop.blocks.size,prop.blocks.size,
 		     0,0,d,d);
+    } else if(b.type == "health") {
+        var time=new Date().getTime()-b.used;
+        if(b.used == false)
+            time=0;
+        if(b.used == false || time < 1000) {
+            cc.globalAlpha=crange(0,time,1000,1,0);
+	    cc.translate(0,trange(0,time,1000,0,-3*d));
+	    cc.translate(0,Math.sin(prop.time.frames*0.1)*d/8);
+	    cc.drawImage(asset_get("pickup-health",ASSET_TYPE_IMAGE).data,
+		         0,0,prop.blocks.size,prop.blocks.size,
+		         0,0,d,d);
+        }
     }
     cc.restore();
 }
@@ -211,7 +228,7 @@ function canvas_draw_player_neptune(cc,p) {
     var d=prop.blocks.size*prop.canvas.scale;
     var a=null;
     var t=4;
-    var f=Math.floor(prop.frames%(t*4)/t);
+    var f=Math.floor(prop.time.frames%(t*4)/t);
     if(game_is_paused())
 	f=0;
     if(!p.on_ground)
@@ -248,7 +265,7 @@ function canvas_draw_player_enemy(cc,p) {
     var d=prop.blocks.size*prop.canvas.scale;
     var a=null;
     var t=5;
-    var f=Math.floor(prop.frames%(t*3)/t);
+    var f=Math.floor(prop.time.frames%(t*3)/t);
     if(game_is_paused())
 	f=0;
     var a=asset_get("bot-walk"+f,ASSET_TYPE_IMAGE);
@@ -348,9 +365,11 @@ function canvas_draw_menus(cc) {
 	cc.stroke();
     }
     canvas_text_print(cc,10,10,
-		      "Health "+Math.round(prop.player.human.health),"small-inverse","lt");
+		      "Health "+cl(prop.player.human.health),"small-inverse","lt");
+    canvas_text_print(cc,10,25,
+		      "Lives "+cl(prop.game.lives),"small-inverse","lt");
     canvas_text_print(cc,prop.canvas.size.width-10,10,
-		      "FPS "+Math.round(prop.time.fps),"small-inverse","rt");
+		      "FPS "+cl(prop.time.fps),"small-inverse","rt");
     if(prop.game.end != 0) {
 	var st=16;
 	var time=new Date().getTime()-prop.game.end;

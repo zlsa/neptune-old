@@ -63,6 +63,10 @@ function fl(n) {
     return Math.floor(n);
 }
 
+function cl(n) {
+    return Math.ceil(n);
+}
+
 function randint(l,h) {
     return(Math.floor(Math.random()*(h-l+1))+l);
 }

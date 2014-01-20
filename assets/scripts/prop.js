@@ -3,7 +3,7 @@ var prop={};
 
 function prop_init() {
     prop.about={};
-    prop.about.version="0.1.7";
+    prop.about.version="0.1.8";
     prop.time={};
     prop.time.start=new Date().getTime();
     prop.time.before=0;
@@ -12,7 +12,7 @@ function prop_init() {
     prop.time.frame_samples=3;
     prop.time.frame_time_avg=0;
     prop.time.fps=0;
-    prop.frames=0;
+    prop.time.frames=0;
 
     prop.debug=true;
 
@@ -20,7 +20,7 @@ function prop_init() {
 }
 
 function prop_update() {
-    prop.frames+=1;
+    prop.time.frames+=1;
 }
 
 function prop_get_value(p) {

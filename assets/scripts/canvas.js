@@ -158,14 +158,18 @@ function canvas_draw_block(cc,b) {
 		     0,0,prop.blocks.size,prop.blocks.size,
 		     0,0,d,d);
 	if(!top || !top.solid()) {
+            cc.translate(0,-4);
 	    cc.drawImage(asset_get("block-sand-top",ASSET_TYPE_IMAGE).data,
 			 0,0,prop.blocks.size,prop.blocks.size,
-			 0,-4,d,d);
+			 0,0,d,d);
+            cc.translate(0,4);
 	}
 	if(!left || !left.solid()) {
+            cc.translate(-4,0);
 	    cc.drawImage(asset_get("block-sand-left",ASSET_TYPE_IMAGE).data,
 			 0,0,prop.blocks.size,prop.blocks.size,
-			 -4,0,d,d);
+			 0,0,d,d);
+            cc.translate(4,0);
 	}
 	if(!right || !right.solid()) {
 	    cc.drawImage(asset_get("block-sand-right",ASSET_TYPE_IMAGE).data,

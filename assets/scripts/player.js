@@ -20,6 +20,8 @@ var Player=function(loc,type) {
     this.speed=[0,0]; // in units/second
     this.hit=[false,false,false,false]; // top right bottom left
     this.type=type; // "human" or "ai"
+    this.jump_force=1;
+    this.climb_speed=1;
     this.on_ground=false;
     this.swimming=false;
     this.dir="right";
@@ -32,10 +34,9 @@ var Player=function(loc,type) {
     };
     if(this.type == "enemy") {
         this.ai.active=true;
-        this.walk_speed=1.1;
+        this.walk_speed=0.5;
         this.width=0.5;
     }
-
     this.update_ai=function() {
         var left_bottom=block_get(fl(this.loc[0]-0.5),-fl(this.loc[1]));
         var right_bottom=block_get(fl(this.loc[0]+0.5),-fl(this.loc[1]));
@@ -74,8 +75,7 @@ var Player=function(loc,type) {
 	    direction:1
         };
     };
-    this.update_physics=function() {
-	var ts=delta();
+    this.update_physics=function(ts) {
 	if(this.motion < -tiny)
 	    this.dir="left";
 	else if(this.motion > tiny)
@@ -109,17 +109,17 @@ var Player=function(loc,type) {
         if(this.jump) {
 	    if(under && under.ladder) {
 		if(!above || !above.solid()) {
-		    this.speed[1]+=2.2;
+		    this.speed[1]+=2.2*this.jump_force;
 		    this.climbing=false;
 		} else {
-		    this.speed[1]=1.5;
+		    this.speed[1]=1.5*this.climb_speed;
 		}
 	    } else if(this.on_ground && !this.hit[TOP]) {
-		this.speed[1]+=2.2;
+		this.speed[1]+=2.2*this.jump_force;
 		this.climbing=false;
 	    }
         } else if(this.down && under && under.ladder && (!above || !above.solid())) {
-	    this.speed[1]=-1.5;
+	    this.speed[1]=-1.5*this.climb_speed;
 	}
     }; 
     this.block_bottom=function() {
@@ -192,10 +192,9 @@ var Player=function(loc,type) {
     // 	else right_distance=-1000000;
     // 	return(-(right_distance));
     // };
-    this.update_health=function() {
+    this.update_health=function(ts) {
         if(this.type != "human")
             return;
-	var ts=delta();
         for(var i=0;i<prop.player.players.length;i++) {
             var player=prop.player.players[i];
             if(player.dead)
@@ -206,7 +205,7 @@ var Player=function(loc,type) {
                    (this.loc[1] > player.loc[1]+0.3) &&
                    (this.speed[1] < 0)) {
                     player.dead=true;
-                    this.speed[1]=1.8;
+                    this.speed[1]=1.8*this.jump_force;
                 } else if((this.loc[1] < player.loc[1]+0.6) &&
                           (this.loc[1] > player.loc[1]-0.1)) {
                     this.health-=1*ts;
@@ -222,8 +221,7 @@ var Player=function(loc,type) {
             prop.game.lives-=1;
         }
     };
-    this.update=function() {
-	var ts=delta();
+    this.real_update=function(ts) {
         if(this.dead) {
             this.dead_amount+=1*ts;
             return;
@@ -232,10 +230,10 @@ var Player=function(loc,type) {
 	    this.swimming=true;
 	else
 	    this.swimming=false;
-        this.update_physics();
-	this.update_health();
-        this.speed[0]=clamp(-3,this.speed[0],3);
-        this.speed[1]=clamp(-10,this.speed[1],10);
+        this.update_physics(ts);
+	this.update_health(ts);
+//        this.speed[0]=clamp(-3,this.speed[0],3);
+//        this.speed[1]=clamp(-10,this.speed[1],10);
         this.loc[0]+=this.speed[0]*ts;
         this.loc[1]+=this.speed[1]*ts;
 	var left=this.block_left();
@@ -285,6 +283,15 @@ var Player=function(loc,type) {
 	if(this.climbing)
 	    this.on_ground=true;
     };
+    this.update=function() {
+        var substeps=prop.game.speedup;
+	var ts=delta()/substeps;
+        for(var i=0;i<substeps;i++) {
+            this.real_update(ts);
+            if(this.type != "human")
+                break;
+        }
+    }
 }
 
 function player_update() {

@@ -169,6 +169,9 @@ function blocks_load_from_string(string) {
         case "#":
             type="dirt";
             break;
+        case "~":
+            type="spring";
+            break;
         case "+":
             type="health";
             break;
